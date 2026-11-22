@@ -100,7 +100,7 @@ footer a{color:#fff;text-decoration:underline;text-decoration-color:#71869b}
 <div class="breaking"><div class="breaking-inner"><span class="breaking-label">آخر الأخبار</span><div class="ticker-window"><span id="ticker">تابع أحدث الأخبار على أخبار اليوم</span></div></div></div>
 <main>
  <div class="soft-banner" aria-hidden="true"></div>
- <div class="ad" id="ad-top">مساحة إعلانية</div>
+ <div class="ad" id="ad-top"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6460882637854837" data-ad-slot="9862233401" data-ad-format="auto" data-full-width-responsive="true"></ins></div>
  <section id="article"></section>
  <section id="listing">
   <section id="categoryDirectory" class="category-directory"><div class="section-head"><h2>استكشف أقسام الأخبار</h2><span>اختر القسم الذي يهمك</span></div><div id="categoryTiles" class="category-tiles"></div></section>
@@ -153,6 +153,7 @@ function storyCard(n){return '<a class="card" href="./?id='+encodeURIComponent(n
 function sideStory(n){return '<a class="side-story" href="./?id='+encodeURIComponent(n.id)+'">'+image(n.image_url,n.title,'',n.category)+'<div class="side-story-body"><span class="category">'+esc(n.category)+'</span><h3>'+esc(n.title)+'</h3><div class="meta">'+date(n.created_at)+'</div></div></a>'}
 function renderAd(placement,ad){
  const box=$('ad-'+placement);if(!box)return;
+ if(box.querySelector('.adsbygoogle'))return;
  if(!ad){box.classList.remove('has-ad');box.textContent='مساحة إعلانية';return;}
  const target=String(ad.target_url||'');const url=(target.startsWith('https://')||target.startsWith('http://'))?target:'#';
  const imageUrl=String(ad.image_url||'');const img=(imageUrl.startsWith('https://')||imageUrl.startsWith('http://'))?imageUrl:'';
@@ -216,6 +217,7 @@ async function load(){
 
 }
 
+(window.adsbygoogle=window.adsbygoogle||[]).push({});
 Promise.all([loadAds()]).then(()=>load());
 </script>
 </body>
