@@ -59,7 +59,7 @@ async function removeNews(id){if(!confirm('هل تريد حذف هذا الخب�
 $('newsForm').onsubmit=async e=>{
  e.preventDefault();say('جارٍ حفظ الخبر...');
  const id=$('newsId').value;let imageUrl=null;
- const {data:{session},error:sessionError}=await db.auth.getSession();const user=session?.user;if(sessionError||!admin(user)){say('تعذر التحقق من حساب المدير. سجّل الخروج ثم ادخل مرة أخرى.');return}
+ const {data:{session},error:sessionError}=await db.auth.getSession();const user=session?.user;if(sessionError){say('خطأ في قراءة الجلسة: '+sessionError.message);return}if(!user){say('لا توجد جلسة دخول نشطة. سجّل الخروج ثم ادخل مرة أخرى.');return}if(!admin(user)){say('الحساب الحالي غير مطابق لحساب المدير. UID الحالي: '+user.id);return}
  if($('image').files[0]){
   const file=$('image').files[0];if(file.size>5*1024*1024){say('حجم الصورة أكبر من 5 ميجابايت.');return}
   const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'');const path=Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;
