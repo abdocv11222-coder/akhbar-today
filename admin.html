@@ -14,7 +14,7 @@
 <label>اسم الإعلان</label><input id="adTitle" required maxlength="120" placeholder="مثال: متجر ...">
 <label>صورة الإعلان</label><input id="adImage" type="file" accept="image/*">
 <label>رابط الإعلان</label><input id="adTarget" type="url" required placeholder="https://example.com">
-<label>مكان ظهور الإعلان</label><select id="adPlacement"><option value="top">أعلى الصفحة</option><option value="middle">بين الأخبار</option><option value="bottom">أسفل الصفحة</option></select>
+<label>مكان ظهور الإعلان</label><select id="adPlacement"><option value="top">أعلى الصفحة</option><option value="middle">بين الأخبار</option><option value="bottom">أسفل الصفحة</option><option value="featured">بعد قسم أهم الأخبار</option><option value="article">داخل صفحة قراءة الخبر</option></select>
 <label><input id="adActive" type="checkbox" checked style="width:auto"> إعلان نشط</label>
 <div class="row"><button type="submit">حفظ الإعلان</button><button type="button" class="secondary" id="adResetBtn">تفريغ الحقول</button></div></form>
 <div class="status">ملحوظة: صورة الإعلان تُرفع إلى مساحة الصور الموجودة بالفعل.</div><h3>الإعلانات الحالية</h3><div id="adsItems">جاري تحميل الإعلانات...</div></div>
@@ -68,7 +68,7 @@ async function loadAds(){
  const {data,error}=await db.from('ads').select('*').order('created_at',{ascending:false});
  if(error){$('adsItems').textContent='تعذر تحميل الإعلانات. تأكد من إنشاء جدول ads في Supabase: '+error.message;return;}
  if(!data?.length){$('adsItems').textContent='لا توجد إعلانات بعد.';return;}
- const places={top:'أعلى الصفحة',middle:'بين الأخبار',bottom:'أسفل الصفحة'};
+ const places={top:'أعلى الصفحة الرئيسية',middle:'منتصف الصفحة الرئيسية',bottom:'أسفل الصفحة الرئيسية',featured:'بعد قسم أهم الأخبار',article:'داخل صفحة قراءة الخبر'};
  $('adsItems').innerHTML=data.map(ad=>'<div class="item"><b>'+safe(ad.title)+'</b><p class="muted">'+safe(places[ad.placement]||ad.placement)+' · '+(ad.active?'نشط':'متوقف')+'</p><button data-ad-edit="'+ad.id+'">تعديل</button><button class="danger" data-ad-delete="'+ad.id+'">حذف</button></div>').join('');
  document.querySelectorAll('[data-ad-edit]').forEach(b=>b.onclick=()=>editAd(data.find(x=>String(x.id)===b.dataset.adEdit)));
  document.querySelectorAll('[data-ad-delete]').forEach(b=>b.onclick=()=>deleteAd(b.dataset.adDelete));
