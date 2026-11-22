@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة إدارة أخبار اليوم</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f2f5f9;color:#172b4d;font-family:Tahoma,Arial,sans-serif}.wrap{max-width:950px;margin:35px auto;padding:16px}.panel{background:#fff;border-radius:14px;padding:22px;margin-bottom:18px;box-shadow:0 5px 20px #102a4310}h1{color:#102a43}label{display:block;margin:12px 0 6px;font-weight:bold}input,textarea,select{width:100%;padding:12px;border:1px solid #cbd5e0;border-radius:8px;font:inherit}textarea{min-height:160px}button{border:0;border-radius:8px;padding:11px 18px;background:#1769aa;color:#fff;font:inherit;cursor:pointer;margin:6px 4px 0 0}button.danger{background:#b42318}button.secondary{background:#526579}.hidden{display:none}.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.item{border:1px solid #e2e8f0;border-radius:10px;padding:14px;margin:10px 0}.muted{color:#64748b}.status{padding:10px;border-radius:8px;background:#edf4ff;margin:10px 0;white-space:pre-wrap}
+*{box-sizing:border-box}body{margin:0;background:#f2f5f9;color:#172b4d;font-family:Tahoma,Arial,sans-serif}.wrap{max-width:950px;margin:35px auto;padding:16px}.panel{background:#fff;border-radius:14px;padding:22px;margin-bottom:18px;box-shadow:0 5px 20px #102a4310}h1{color:#102a43}label{display:block;margin:12px 0 6px;font-weight:bold}input,textarea,select{width:100%;padding:12px;border:1px solid #cbd5e0;border-radius:8px;font:inherit}textarea{min-height:160px}button{border:0;border-radius:8px;padding:11px 18px;background:#1769aa;color:#fff;font:inherit;cursor:pointer;margin:6px 4px 0 0}button.danger{background:#b42318}button.secondary{background:#526579}.hidden{display:none!important}#login[hidden],#dashboard[hidden]{display:none!important}.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.item{border:1px solid #e2e8f0;border-radius:10px;padding:14px;margin:10px 0}.muted{color:#64748b}.status{padding:10px;border-radius:8px;background:#edf4ff;margin:10px 0;white-space:pre-wrap}
 </style></head><body><div class="wrap">
 <h1>لوحة إدارة أخبار اليوم</h1><p class="muted">سجّل الدخول بحساب المدير لإضافة الأخبار وتعديلها.</p>
 <div id="status" class="status">جاهز.</div>
@@ -18,12 +18,31 @@ const ADMIN_UID="87460077-2933-4001-acaa-39a4a1577a05";
 const $=id=>document.getElementById(id);
 function say(t){$('status').textContent=t}
 function admin(user){return user&&user.id===ADMIN_UID}
-async function check(){
- const {data:{session}}=await db.auth.getSession();
- if(session&&admin(session.user)){ $('login').classList.add('hidden');$('dashboard').classList.remove('hidden');say('تم تسجيل الدخول كمدير.');await loadItems();}
- else {$('dashboard').classList.add('hidden');$('login').classList.remove('hidden');if(session){say('هذا الحساب ليس حساب المدير المصرح له.');await db.auth.signOut();}}
+function showDashboard(){
+ $('login').hidden=true;$('login').style.display='none';
+ $('dashboard').hidden=false;$('dashboard').classList.remove('hidden');$('dashboard').style.display='block';
 }
-$('loginBtn').onclick=async()=>{say('جارٍ تسجيل الدخول...');const {data,error}=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(error){say('تعذر تسجيل الدخول: '+error.message);return}if(!admin(data.user)){await db.auth.signOut();say('هذا الحساب غير مصرح له بإدارة الموقع.');return}await check()};
+function showLogin(){
+ $('dashboard').hidden=true;$('dashboard').style.display='none';
+ $('login').hidden=false;$('login').classList.remove('hidden');$('login').style.display='block';
+}
+async function check(){
+ const {data:{session},error}=await db.auth.getSession();
+ if(error){say('تعذر التحقق من الجلسة: '+error.message);showLogin();return}
+ if(session&&admin(session.user)){
+   showDashboard();say('تم تسجيل الدخول كمدير.');await loadItems();
+ } else {
+   showLogin();
+   if(session){say('هذا الحساب ليس حساب المدير المصرح له.');await db.auth.signOut();}
+ }
+}
+$('loginBtn').onclick=async()=>{
+ say('جارٍ تسجيل الدخول...');
+ const {data,error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
+ if(error){say('تعذر تسجيل الدخول: '+error.message);return}
+ if(!admin(data.user)){await db.auth.signOut();say('هذا الحساب غير مصرح له بإدارة الموقع.');showLogin();return}
+ showDashboard();say('تم تسجيل الدخول كمدير.');await loadItems();
+};
 $('logoutBtn').onclick=async()=>{await db.auth.signOut();await check()};
 $('resetBtn').onclick=()=>{$('newsForm').reset();$('newsId').value=''};
 async function loadItems(){
