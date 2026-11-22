@@ -73,6 +73,6 @@ $('newsForm').onsubmit=async e=>{
  if(result.error){say('فشل الحفظ: '+result.error.message);return}
  say('تم حفظ الخبر بنجاح.');$('newsForm').reset();$('newsId').value='';await loadItems();
 };
-db.auth.onAuthStateChange(()=>{setTimeout(check,0)});
+// فحص الجلسة مرة واحدة عند فتح الصفحة؛ لا نعيد إظهار شاشة الدخول أثناء حدث تسجيل الدخول.
 check();
 </script></body></html>
