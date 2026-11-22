@@ -113,7 +113,7 @@ footer a{color:#fff;text-decoration:underline;text-decoration-color:#71869b}
   <div class="section-head"><h2 id="heading">أحدث الأخبار</h2><span>كل جديد في مكان واحد</span></div>
   <div id="news" class="cards"><div class="empty">جاري تحميل الأخبار...</div></div><div id="categorySections"></div>
  </section>
- <div class="ad" id="ad-bottom">مساحة إعلانية</div>
+ <div class="ad" id="ad-bottom"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6460882637854837" data-ad-slot="7386832045" data-ad-format="auto" data-full-width-responsive="true"></ins></div>
 </main>
 <footer><div class="footer-inner"><div><div class="footer-brand">أخبار اليوم</div><p>من قلب الحدث.. أخبار تهمك كل يوم</p></div><div><p>جميع الحقوق محفوظة © أخبار اليوم <span id="year"></span></p><p class="footer-links"><a href="./about.html">من نحن</a>　|　<a href="./contact.html">اتصل بنا</a>　|　<a href="./privacy.html">سياسة الخصوصية</a>　|　<a href="./admin.html">لوحة الإدارة</a></p></div></div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -217,6 +217,7 @@ async function load(){
 
 }
 
+(window.adsbygoogle=window.adsbygoogle||[]).push({});
 (window.adsbygoogle=window.adsbygoogle||[]).push({});
 (window.adsbygoogle=window.adsbygoogle||[]).push({});
 Promise.all([loadAds()]).then(()=>load());
