@@ -16,21 +16,21 @@ on storage.objects for insert
 to authenticated
 with check (
   bucket_id = 'news-images'
-  and auth.uid() = '3449f7ef-7262-4d04-b29a-c3fa9cda5574'::uuid
+  and auth.uid() = '87460077-2933-4001-acaa-39a4a1577a05'::uuid
 );
 
 drop policy if exists "Admin can update news images" on storage.objects;
 create policy "Admin can update news images"
 on storage.objects for update
 to authenticated
-using (bucket_id = 'news-images' and auth.uid() = '3449f7ef-7262-4d04-b29a-c3fa9cda5574'::uuid)
-with check (bucket_id = 'news-images' and auth.uid() = '3449f7ef-7262-4d04-b29a-c3fa9cda5574'::uuid);
+using (bucket_id = 'news-images' and auth.uid() = '87460077-2933-4001-acaa-39a4a1577a05'::uuid)
+with check (bucket_id = 'news-images' and auth.uid() = '87460077-2933-4001-acaa-39a4a1577a05'::uuid);
 
 drop policy if exists "Admin can delete news images" on storage.objects;
 create policy "Admin can delete news images"
 on storage.objects for delete
 to authenticated
-using (bucket_id = 'news-images' and auth.uid() = '3449f7ef-7262-4d04-b29a-c3fa9cda5574'::uuid);
+using (bucket_id = 'news-images' and auth.uid() = '87460077-2933-4001-acaa-39a4a1577a05'::uuid);
 
 -- صلاحيات الوصول الأساسية لواجهة الموقع ولوحة الإدارة.
 grant select on public.news to anon, authenticated;
