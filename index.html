@@ -170,7 +170,20 @@ async function loadAds(){
  ['top','middle','bottom','featured','article'].forEach(p=>renderAd(p,activeAds.find(ad=>ad.placement===p)||activeAds.find(ad=>ad.placement==='all')));
 }
 function renderCards(items){$('news').innerHTML=items.length?items.map(storyCard).join(''):'<div class="empty">لا توجد نتائج مطابقة لبحثك.</div>'; $('searchStatus').textContent=items.length?'عدد الأخبار: '+items.length:'';}
-function filterNews(term,items){const value=term.trim().toLocaleLowerCase('ar');const filtered=items.filter(n=>(String(n.title)+' '+String(n.content)+' '+String(n.category)).toLocaleLowerCase('ar').includes(value));renderCards(filtered);$('categorySections').style.display=value?'none':'';}
+function normalizeSearch(value){return String(value||'').toLocaleLowerCase('ar').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/[ًٌٍَُِّْـ]/g,'').trim();}
+function filterNews(term){
+ const value=normalizeSearch(term),category=params.get('category');
+ if(value){
+  const filtered=allNews.filter(n=>normalizeSearch([n.title,n.content,n.category].join(' ')).includes(value));
+  $('homeLead').style.display='none';$('categoryDirectory').style.display='none';$('categorySections').style.display='none';
+  renderCards(filtered);$('searchStatus').textContent='نتائج البحث: '+filtered.length;
+ }else{
+  $('categoryDirectory').style.display=category?'none':'';
+  $('homeLead').style.display=category?'none':'';
+  $('categorySections').style.display=category?'none':'';
+  renderCards(category?allNews:allNews.slice(3));$('searchStatus').textContent='';
+ }
+}
 function renderCategoryDirectory(){
  const categories=['مصر','عرب وعالم','حوادث','رياضة','اقتصاد','تكنولوجيا','تعليم','صحة','فن وثقافة','منوعات','علوم وفضاء','عام'];
  $('categoryTiles').innerHTML=categories.map(cat=>'<a class="category-tile" href="./?category='+encodeURIComponent(cat)+'">'+image('',cat,'',cat)+'<strong>'+esc(cat)+'</strong></a>').join('');
@@ -215,8 +228,9 @@ async function load(){
  if(!category){renderLead(data);renderCategorySections(data);}
  const remaining=category?data:data.slice(3);
  renderCards(remaining);
- $('searchInput').addEventListener('input',e=>filterNews(e.target.value,remaining));
+
 }
+$('searchInput').addEventListener('input',e=>filterNews(e.target.value));
 Promise.all([loadAds()]).then(()=>load());
 </script>
 </body>
