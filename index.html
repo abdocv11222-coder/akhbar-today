@@ -39,7 +39,7 @@ nav a:hover,nav a.active{background:var(--red);color:#fff}
 .search-hint{font-size:12px;color:var(--muted);white-space:nowrap}
 .search-status{font-size:13px;color:var(--muted);margin:-5px 0 14px}
 main{max-width:1200px;margin:26px auto;padding:0 20px}
-.ad{background:#fff;border:1px dashed #c7d0da;border-radius:10px;text-align:center;padding:16px;color:#8a97a6;font-size:13px;margin:22px 0}
+.ad{background:#fff;border:1px dashed #c7d0da;border-radius:10px;text-align:center;padding:16px;color:#8a97a6;font-size:13px;margin:22px 0;min-height:76px}.ad.has-ad{padding:8px;border:1px solid #e5eaf0;background:#fff}.ad a{display:block}.ad img{display:block;width:100%;max-height:190px;object-fit:contain;border-radius:7px}.ad-label{display:block;text-align:right;color:#8a97a6;font-size:10px;margin:0 4px 5px}
 .section-head{display:flex;align-items:center;justify-content:space-between;border-right:5px solid var(--red);padding:2px 12px 2px 0;margin:28px 0 16px}
 .section-head h2{font-size:22px;margin:0;color:var(--navy)}
 .section-head span{font-size:12px;color:var(--muted)}.category-section{margin:30px 0}.category-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}.category-tile{position:relative;display:block;height:150px;border-radius:13px;overflow:hidden;background:var(--navy);box-shadow:var(--shadow);isolation:isolate}.category-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}.category-tile:hover img{transform:scale(1.08)}.category-tile:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(4,17,30,.9),rgba(4,17,30,.04) 85%);z-index:0}.category-tile strong{position:absolute;right:14px;bottom:12px;z-index:1;color:white;font-size:18px;text-shadow:0 2px 8px #0009}.category-more{font-size:12px;color:var(--red);font-weight:900;white-space:nowrap}.category-section .cards{grid-template-columns:repeat(3,minmax(0,1fr))}.category-section .card img{height:180px}
@@ -101,7 +101,7 @@ footer a{color:#fff;text-decoration:underline;text-decoration-color:#71869b}
 <div class="breaking"><div class="breaking-inner"><span class="breaking-label">آخر الأخبار</span><div class="ticker-window"><span id="ticker">تابع أحدث الأخبار على أخبار اليوم</span></div></div></div>
 <main>
  <div class="search-row"><label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="ابحث عن خبر أو موضوع..." autocomplete="off"></label><span class="search-hint">ابحث في أخبار اليوم</span></div><div id="searchStatus" class="search-status" aria-live="polite"></div>
- <div class="ad">مساحة إعلانية</div>
+ <div class="ad" id="ad-top">مساحة إعلانية</div>
  <section id="article"></section>
  <section id="listing">
   <section id="categoryDirectory" class="category-directory"><div class="section-head"><h2>استكشف أقسام الأخبار</h2><span>اختر القسم الذي يهمك</span></div><div id="categoryTiles" class="category-tiles"></div></section>
@@ -109,10 +109,11 @@ footer a{color:#fff;text-decoration:underline;text-decoration-color:#71869b}
    <div class="section-head"><h2>أهم الأخبار</h2><span>أبرز ما يحدث الآن</span></div>
    <div id="leadLayout" class="lead-layout"><div class="empty">جاري تحميل الأخبار...</div></div>
   </div>
+  <div class="ad" id="ad-middle">مساحة إعلانية</div>
   <div class="section-head"><h2 id="heading">أحدث الأخبار</h2><span>كل جديد في مكان واحد</span></div>
   <div id="news" class="cards"><div class="empty">جاري تحميل الأخبار...</div></div><div id="categorySections"></div>
  </section>
- <div class="ad">مساحة إعلانية</div>
+ <div class="ad" id="ad-bottom">مساحة إعلانية</div>
 </main>
 <footer><div class="footer-inner"><div><div class="footer-brand">أخبار اليوم</div><p>من قلب الحدث.. أخبار تهمك كل يوم</p></div><div><p>جميع الحقوق محفوظة © أخبار اليوم <span id="year"></span></p><p><a href="./admin.html">لوحة الإدارة</a></p></div></div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -150,6 +151,20 @@ $('year').textContent=new Date().getFullYear();
 $('today').textContent=new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 function storyCard(n){return '<article class="card">'+image(n.image_url,n.title,'',n.category)+'<div class="card-body"><span class="category">'+esc(n.category)+'</span><h3>'+esc(n.title)+'</h3><p>'+excerpt(n.content)+'</p><div class="meta">'+date(n.created_at)+'</div><a class="read-more" href="./?id='+encodeURIComponent(n.id)+'">اقرأ التفاصيل ←</a></div></article>'}
 function sideStory(n){return '<a class="side-story" href="./?id='+encodeURIComponent(n.id)+'">'+image(n.image_url,n.title,'',n.category)+'<div class="side-story-body"><span class="category">'+esc(n.category)+'</span><h3>'+esc(n.title)+'</h3><div class="meta">'+date(n.created_at)+'</div></div></a>'}
+function renderAd(placement,ad){
+ const box=$('ad-'+placement);if(!box)return;
+ if(!ad){box.classList.remove('has-ad');box.textContent='مساحة إعلانية';return;}
+ const url=/^https?:\\/\\//i.test(String(ad.target_url||''))?ad.target_url:'#';
+ const img=/^https?:\\/\\//i.test(String(ad.image_url||''))?ad.image_url:'';
+ if(!img){box.classList.remove('has-ad');box.textContent='مساحة إعلانية';return;}
+ box.classList.add('has-ad');
+ box.innerHTML='<span class="ad-label">إعلان</span><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer sponsored"><img src="'+esc(img)+'" alt="'+esc(ad.title||'إعلان')+'" loading="lazy"></a>';
+}
+async function loadAds(){
+ const {data,error}=await db.from('ads').select('id,title,image_url,target_url,placement,active').eq('active',true).order('created_at',{ascending:false});
+ if(error){console.info('Ads are not configured yet:',error.message);return;}
+ ['top','middle','bottom'].forEach(p=>renderAd(p,(data||[]).find(ad=>ad.placement===p)));
+}
 function renderCards(items){$('news').innerHTML=items.length?items.map(storyCard).join(''):'<div class="empty">لا توجد نتائج مطابقة لبحثك.</div>'; $('searchStatus').textContent=items.length?'عدد الأخبار: '+items.length:'';}
 function filterNews(term,items){const value=term.trim().toLocaleLowerCase('ar');const filtered=items.filter(n=>(String(n.title)+' '+String(n.content)+' '+String(n.category)).toLocaleLowerCase('ar').includes(value));renderCards(filtered);$('categorySections').style.display=value?'none':'';}
 function renderCategoryDirectory(){
@@ -188,6 +203,7 @@ async function load(){
  renderCards(remaining);
  $('searchInput').addEventListener('input',e=>filterNews(e.target.value,remaining));
 }
+loadAds();
 load();
 </script>
 </body>
