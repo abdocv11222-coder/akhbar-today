@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة إدارة أخبار اليوم</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f2f5f9;color:#172b4d;font-family:Tahoma,Arial,sans-serif}.wrap{max-width:950px;margin:35px auto;padding:16px}.panel{background:#fff;border-radius:14px;padding:22px;margin-bottom:18px;box-shadow:0 5px 20px #102a4310}h1{color:#102a43}label{display:block;margin:12px 0 6px;font-weight:bold}input,textarea,select{width:100%;padding:12px;border:1px solid #cbd5e0;border-radius:8px;font:inherit}textarea{min-height:160px}button{border:0;border-radius:8px;padding:11px 18px;background:#1769aa;color:#fff;font:inherit;cursor:pointer;margin:6px 4px 0 0}button.danger{background:#b42318}button.secondary{background:#526579}.hidden{display:none}.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.item{border:1px solid #e2e8f0;border-radius:10px;padding:14px;margin:10px 0}.muted{color:#64748b}.status{padding:10px;border-radius:8px;background:#edf4ff;margin:10px 0;white-space:pre-wrap}
+</style></head><body><div class="wrap">
+<h1>لوحة إدارة أخبار اليوم</h1><p class="muted">سجّل الدخول بحساب المدير لإضافة الأخبار وتعديلها.</p>
+<div id="status" class="status">جاهز.</div>
+<section id="login" class="panel"><h2>تسجيل الدخول</h2><label>البريد الإلكتروني</label><input id="email" type="email" autocomplete="username"><label>كلمة المرور</label><input id="password" type="password" autocomplete="current-password"><button id="loginBtn">دخول</button></section>
+<section id="dashboard" class="hidden">
+<div class="panel"><div class="row"><h2>إضافة / تعديل خبر</h2><button class="secondary" id="logoutBtn">تسجيل الخروج</button></div>
+<form id="newsForm"><input id="newsId" type="hidden"><label>عنوان الخبر</label><input id="title" required maxlength="180"><label>التصنيف</label><select id="category"><option>مصر</option><option>سياسة</option><option>رياضة</option><option>اقتصاد</option><option>تكنولوجيا</option><option>عام</option></select><label>محتوى الخبر</label><textarea id="content" required></textarea><label>صورة الخبر (اختياري)</label><input id="image" type="file" accept="image/*"><label><input id="published" type="checkbox" checked style="width:auto"> نشر الخبر</label><div class="row"><button type="submit">حفظ الخبر</button><button type="button" class="secondary" id="resetBtn">تفريغ الحقول</button></div></form></div>
+<div class="panel"><h2>الأخبار الموجودة</h2><div id="items">جاري التحميل...</div></div>
+</section></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const db=window.supabase.createClient("https://pnpcfrjheoflclbqnppl.supabase.co","sb_publishable_WJj_Q4JnzCGjBeekNAoJ_w_XQ5dJtzY");
+const ADMIN_UID="3449f7ef-7262-4d04-b29a-c3fa9cda5574";
+const $=id=>document.getElementById(id);
+function say(t){$('status').textContent=t}
+function admin(user){return user&&user.id===ADMIN_UID}
+async function check(){
+ const {data:{session}}=await db.auth.getSession();
+ if(session&&admin(session.user)){ $('login').classList.add('hidden');$('dashboard').classList.remove('hidden');say('تم تسجيل الدخول كمدير.');await loadItems();}
+ else {$('dashboard').classList.add('hidden');$('login').classList.remove('hidden');if(session){say('هذا الحساب ليس حساب المدير المصرح له.');await db.auth.signOut();}}
+}
+$('loginBtn').onclick=async()=>{say('جارٍ تسجيل الدخول...');const {data,error}=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(error){say('تعذر تسجيل الدخول: '+error.message);return}if(!admin(data.user)){await db.auth.signOut();say('هذا الحساب غير مصرح له بإدارة الموقع.');return}await check()};
+$('logoutBtn').onclick=async()=>{await db.auth.signOut();await check()};
+$('resetBtn').onclick=()=>{$('newsForm').reset();$('newsId').value=''};
+async function loadItems(){
+ const {data,error}=await db.from('news').select('*').order('created_at',{ascending:false});
+ if(error){$('items').textContent='خطأ في تحميل الأخبار: '+error.message;return}
+ if(!data.length){$('items').textContent='لا توجد أخبار بعد.';return}
+ $('items').innerHTML=data.map(n=>'<div class="item"><b>'+safe(n.title)+'</b><p class="muted">'+safe(n.category)+' · '+(n.published?'منشور':'مسودة')+'</p><button data-edit="'+n.id+'">تعديل</button><button class="danger" data-delete="'+n.id+'">حذف</button></div>').join('');
+ document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>edit(data.find(n=>String(n.id)===b.dataset.edit)));
+ document.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>removeNews(b.dataset.delete));
+}
+function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function edit(n){$('newsId').value=n.id;$('title').value=n.title;$('content').value=n.content;$('category').value=n.category;$('published').checked=n.published;$('image').value='';window.scrollTo({top:0,behavior:'smooth'});say('تعديل الخبر رقم '+n.id+'.')}
+async function removeNews(id){if(!confirm('هل تريد حذف هذا الخبر؟'))return;const {error}=await db.from('news').delete().eq('id',id);if(error){say('فشل الحذف: '+error.message);return}say('تم حذف الخبر.');await loadItems()}
+$('newsForm').onsubmit=async e=>{
+ e.preventDefault();say('جارٍ حفظ الخبر...');
+ const id=$('newsId').value;let imageUrl=null;
+ const {data:{user}}=await db.auth.getUser();if(!admin(user)){say('انتهت صلاحية الجلسة أو الحساب غير مصرح له.');return}
+ if($('image').files[0]){
+  const file=$('image').files[0];if(file.size>5*1024*1024){say('حجم الصورة أكبر من 5 ميجابايت.');return}
+  const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'');const path=Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;
+  const {error:upErr}=await db.storage.from('news-images').upload(path,file,{upsert:false,contentType:file.type});
+  if(upErr){say('تعذر رفع الصورة. شغّل إعدادات التخزين أولاً: '+upErr.message);return}
+  imageUrl=db.storage.from('news-images').getPublicUrl(path).data.publicUrl;
+ }
+ const payload={title:$('title').value.trim(),content:$('content').value.trim(),category:$('category').value,published:$('published').checked};
+ if(imageUrl)payload.image_url=imageUrl;
+ let result=id?await db.from('news').update(payload).eq('id',id):await db.from('news').insert(payload);
+ if(result.error){say('فشل الحفظ: '+result.error.message);return}
+ say('تم حفظ الخبر بنجاح.');$('newsForm').reset();$('newsId').value='';await loadItems();
+};
+db.auth.onAuthStateChange(()=>{setTimeout(check,0)});
+check();
+</script></body></html>
