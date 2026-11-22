@@ -210,7 +210,7 @@ async function load(){
  renderCards(remaining);
 
 }
-$('searchForm').addEventListener('submit',e=>{e.preventDefault();filterNews($('searchInput').value);});\n$('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();filterNews(e.target.value);}});
+
 Promise.all([loadAds()]).then(()=>load());
 </script>
 </body>
