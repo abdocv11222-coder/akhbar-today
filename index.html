@@ -175,14 +175,13 @@ async function load(){
   return;
  }
  const category=params.get('category');
- if(category){$('homeLead').style.display='none';$('categoryDirectory').style.display='none';$('heading').textContent='أخبار '+category;document.querySelectorAll('#mainNav a').forEach(a=>a.classList.toggle('active',a.dataset.cat===category));}
+ if(category){$('homeLead').style.display='none';$('categoryDirectory').style.display='none';$('heading').textContent='أخبار '+category;document.querySelectorAll('#mainNav a').forEach(a=>a.classList.toggle('active',a.dataset.cat===category));}else{renderCategoryDirectory();}
  let q=db.from('news').select('id,title,content,image_url,category,created_at').eq('published',true).order('created_at',{ascending:false});
  if(category)q=q.eq('category',category);
  const {data,error}=await q;
  if(error){$('news').innerHTML='<div class="error">تعذر تحميل الأخبار حالياً. حاول تحديث الصفحة بعد قليل.</div>';if(!category)$('leadLayout').innerHTML='<div class="error">تعذر تحميل الأخبار حالياً.</div>';return}
  if(!data?.length){$('news').innerHTML='<div class="empty">لا توجد أخبار منشورة حالياً.</div>';if(!category)$('leadLayout').innerHTML='<div class="empty">سيظهر الخبر الرئيسي هنا فور نشر أول خبر.</div>';$('ticker').textContent='لا توجد أخبار عاجلة حالياً';return}
  allNews=data;
- if(!category)renderCategoryDirectory();
  $('ticker').textContent=data.slice(0,5).map(n=>n.title).join('　●　');
  if(!category){renderLead(data);renderCategorySections(data);}
  const remaining=category?data:data.slice(3);
