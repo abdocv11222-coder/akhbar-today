@@ -108,6 +108,7 @@ footer a{color:#fff;text-decoration:underline;text-decoration-color:#71869b}
   <div id="homeLead">
    <div class="section-head"><h2>أهم الأخبار</h2><span>أبرز ما يحدث الآن</span></div>
    <div id="leadLayout" class="lead-layout"><div class="empty">جاري تحميل الأخبار...</div></div>
+   <div class="ad" id="ad-featured">مساحة إعلانية</div>
   </div>
   <div class="ad" id="ad-middle">مساحة إعلانية</div>
   <div class="section-head"><h2 id="heading">أحدث الأخبار</h2><span>كل جديد في مكان واحد</span></div>
@@ -124,6 +125,7 @@ const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const params=new URLSearchParams(location.search);
 let allNews=[];
+let activeAds=[];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=s=>new Date(s).toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});
 const excerpt=s=>{const t=String(s??'');return esc(t.slice(0,135))+(t.length>135?'…':'')};
@@ -163,7 +165,8 @@ function renderAd(placement,ad){
 async function loadAds(){
  const {data,error}=await db.from('ads').select('id,title,image_url,target_url,placement,active').eq('active',true).order('created_at',{ascending:false});
  if(error){console.info('Ads are not configured yet:',error.message);return;}
- ['top','middle','bottom'].forEach(p=>renderAd(p,(data||[]).find(ad=>ad.placement===p)));
+ activeAds=data||[];
+ ['top','middle','bottom','featured','article'].forEach(p=>renderAd(p,activeAds.find(ad=>ad.placement===p)));
 }
 function renderCards(items){$('news').innerHTML=items.length?items.map(storyCard).join(''):'<div class="empty">لا توجد نتائج مطابقة لبحثك.</div>'; $('searchStatus').textContent=items.length?'عدد الأخبار: '+items.length:'';}
 function filterNews(term,items){const value=term.trim().toLocaleLowerCase('ar');const filtered=items.filter(n=>(String(n.title)+' '+String(n.content)+' '+String(n.category)).toLocaleLowerCase('ar').includes(value));renderCards(filtered);$('categorySections').style.display=value?'none':'';}
@@ -186,7 +189,8 @@ async function load(){
   const {data,error}=await db.from('news').select('*').eq('id',id).eq('published',true).single();
   if(error||!data){box.innerHTML='<h2>الخبر غير متاح</h2><a class="back-link" href="./">العودة للرئيسية</a>';return}
   document.title=data.title+' | أخبار اليوم';
-  box.innerHTML='<span class="tag">'+esc(data.category)+'</span><h1>'+esc(data.title)+'</h1><div class="meta">'+date(data.created_at)+'</div>'+'<img class="article-cover" src="'+esc(data.image_url||categoryPhoto(data.category))+'" alt="'+esc(data.title)+'" onerror="this.onerror=null;this.src=\''+categoryPhoto('')+'\'">'+'<div class="article-content">'+esc(data.content)+'</div><a class="back-link" href="./">← العودة إلى الأخبار</a>';
+  box.innerHTML='<span class="tag">'+esc(data.category)+'</span><h1>'+esc(data.title)+'</h1><div class="meta">'+date(data.created_at)+'</div>'+'<img class="article-cover" src="'+esc(data.image_url||categoryPhoto(data.category))+'" alt="'+esc(data.title)+'" onerror="this.onerror=null;this.src=\''+categoryPhoto('')+'\'">'+'<div class="ad" id="ad-article">مساحة إعلانية</div>'+'<div class="article-content">'+esc(data.content)+'</div><a class="back-link" href="./">← العودة إلى الأخبار</a>';
+  renderAd('article',activeAds.find(ad=>ad.placement==='article'));
   return;
  }
  const category=params.get('category');
