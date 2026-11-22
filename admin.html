@@ -15,6 +15,7 @@
 <script>
 const db=window.supabase.createClient("https://pnpcfrjheoflclbqnppl.supabase.co","sb_publishable_WJj_QJ4nzCGjBeekNAoJ_w_XQ5dJtzY");
 const ADMIN_UID="87460077-2933-4001-acaa-39a4a1577a05";
+let activeSession=null;
 const $=id=>document.getElementById(id);
 function say(t){$('status').textContent=t}
 function admin(user){return user&&user.id===ADMIN_UID}
@@ -30,7 +31,7 @@ async function check(){
  const {data:{session},error}=await db.auth.getSession();
  if(error){say('تعذر التحقق من الجلسة: '+error.message);showLogin();return}
  if(session&&admin(session.user)){
-   showDashboard();say('تم تسجيل الدخول كمدير.');await loadItems();
+   activeSession=session;showDashboard();say('تم تسجيل الدخول كمدير.');await loadItems();
  } else {
    showLogin();
    if(session){say('هذا الحساب ليس حساب المدير المصرح له.');await db.auth.signOut();}
@@ -40,10 +41,10 @@ $('loginBtn').onclick=async()=>{
  say('جارٍ تسجيل الدخول...');
  const {data,error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
  if(error){say('تعذر تسجيل الدخول: '+error.message);return}
- if(!admin(data.user)){await db.auth.signOut();say('هذا الحساب غير مصرح له بإدارة الموقع.');showLogin();return}
- showDashboard();say('تم تسجيل الدخول كمدير.');await loadItems();
+ if(!admin(data.user)){await db.auth.signOut();activeSession=null;say('هذا الحساب غير مصرح له بإدارة الموقع.');showLogin();return}
+ activeSession=data.session;showDashboard();say('تم تسجيل الدخول. تم حفظ الجلسة.');say('تم تسجيل الدخول كمدير.');await loadItems();
 };
-$('logoutBtn').onclick=async()=>{await db.auth.signOut();await check()};
+$('logoutBtn').onclick=async()=>{activeSession=null;await db.auth.signOut();await check()};
 $('resetBtn').onclick=()=>{$('newsForm').reset();$('newsId').value=''};
 async function loadItems(){
  const {data,error}=await db.from('news').select('*').order('created_at',{ascending:false});
@@ -59,7 +60,7 @@ async function removeNews(id){if(!confirm('هل تريد حذف هذا الخب�
 $('newsForm').onsubmit=async e=>{
  e.preventDefault();say('جارٍ حفظ الخبر...');
  const id=$('newsId').value;let imageUrl=null;
- const {data:{session},error:sessionError}=await db.auth.getSession();const user=session?.user;if(sessionError){say('خطأ في قراءة الجلسة: '+sessionError.message);return}if(!user){say('لا توجد جلسة دخول نشطة. سجّل الخروج ثم ادخل مرة أخرى.');return}if(!admin(user)){say('الحساب الحالي غير مطابق لحساب المدير. UID الحالي: '+user.id);return}
+ let {data:{session},error:sessionError}=await db.auth.getSession();if(sessionError){say('خطأ في قراءة الجلسة: '+sessionError.message);return}if(!session&&activeSession?.access_token&&activeSession?.refresh_token){const restored=await db.auth.setSession({access_token:activeSession.access_token,refresh_token:activeSession.refresh_token});if(restored.error){say('تعذر استعادة جلسة الدخول: '+restored.error.message);return}session=restored.data.session;activeSession=session}if(!session){say('انتهت جلسة الدخول. سجّل الخروج ثم ادخل مرة أخرى.');return}if(!admin(session.user)){say('الحساب الحالي غير مصرح له. UID: '+session.user.id);return}
  if($('image').files[0]){
   const file=$('image').files[0];if(file.size>5*1024*1024){say('حجم الصورة أكبر من 5 ميجابايت.');return}
   const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'');const path=Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;
