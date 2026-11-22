@@ -32,12 +32,6 @@ nav a:hover,nav a.active{background:var(--red);color:#fff}
 #ticker{display:inline-block;font-size:14px;font-weight:700;white-space:nowrap;animation:newsTicker 28s linear infinite}
 #ticker:hover{animation-play-state:paused}
 @keyframes newsTicker{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
-.search-row{display:flex;gap:10px;align-items:center;margin:18px 0 24px}.search-submit{border:0;border-radius:9px;background:var(--red);color:#fff;padding:0 22px;min-height:48px;font:inherit;font-weight:800;cursor:pointer}.search-submit:hover{background:var(--red2)}
-.search-box{flex:1;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:0 15px;box-shadow:0 3px 14px #102a4308}
-.search-box span{font-size:19px;color:var(--red)}
-.search-box input{width:100%;border:0;outline:0;padding:14px 0;font:inherit;font-size:14px;color:var(--ink);background:transparent}
-.search-hint{font-size:12px;color:var(--muted);white-space:nowrap}
-.search-status{font-size:13px;color:var(--muted);margin:-5px 0 14px}
 main{max-width:1200px;margin:26px auto;padding:0 20px}
 .ad{background:#fff;border:1px dashed #c7d0da;border-radius:10px;text-align:center;padding:16px;color:#8a97a6;font-size:13px;margin:22px 0;min-height:76px}.ad.has-ad{padding:8px;border:1px solid #e5eaf0;background:#fff}.ad a{display:block}.ad img{display:block;width:100%;max-height:190px;object-fit:contain;border-radius:7px}.ad-label{display:block;text-align:right;color:#8a97a6;font-size:10px;margin:0 4px 5px}
 .section-head{display:flex;align-items:center;justify-content:space-between;border-right:5px solid var(--red);padding:2px 12px 2px 0;margin:28px 0 16px}
@@ -84,7 +78,7 @@ footer a{color:#fff;text-decoration:underline;text-decoration-color:#71869b}
 @media(max-width:370px){.cards{grid-template-columns:1fr}.hero{min-height:280px}}
 
 .article-topline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}.article-tools{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0}.article-btn{border:1px solid #dbe3eb;background:#f7f9fb;color:var(--navy);border-radius:8px;padding:9px 14px;font:inherit;font-size:13px;font-weight:800;cursor:pointer}.article-btn.primary{background:var(--red);border-color:var(--red);color:#fff}.article-summary{font-size:18px;color:#526579;background:#f5f7fa;border-right:4px solid var(--red);padding:14px 17px;border-radius:8px;margin:18px 0 22px}.article-content{max-width:820px;margin:22px auto;font-size:18px;line-height:2.15;color:#293e52;white-space:pre-wrap;overflow-wrap:anywhere}.article-ad-wrap{max-width:900px;margin:24px auto}.article-related{margin-top:36px;padding-top:20px;border-top:1px solid var(--line)}.article-related .cards{grid-template-columns:repeat(3,minmax(0,1fr))}.article-notice{font-size:12px;color:#7b8998;text-align:center;margin:20px 0 0}@media(max-width:650px){.article-related .cards{grid-template-columns:1fr 1fr}.article-summary{font-size:16px}.article-content{font-size:16px}}
-</style>
+.soft-banner{height:142px;margin:18px 0 24px;border-radius:12px;overflow:hidden;position:relative;background:#dbe3eb;box-shadow:var(--shadow);isolation:isolate}.soft-banner:before{content:"";position:absolute;inset:-8px;background:url("https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1600&q=80") center 48%/cover no-repeat;filter:blur(6px);transform:scale(1.05)}.soft-banner:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(16,42,67,.2),rgba(16,42,67,.42));}@media(max-width:560px){.soft-banner{height:105px;margin:14px 0 18px}}\n</style>
 </head>
 <body>
 <div class="topline"></div>
@@ -102,7 +96,7 @@ footer a{color:#fff;text-decoration:underline;text-decoration-color:#71869b}
 </nav></div>
 <div class="breaking"><div class="breaking-inner"><span class="breaking-label">آخر الأخبار</span><div class="ticker-window"><span id="ticker">تابع أحدث الأخبار على أخبار اليوم</span></div></div></div>
 <main>
- <form class="search-row" id="searchForm"><label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="اكتب كلمة من عنوان الخبر..." autocomplete="off"></label><button class="search-submit" type="submit">بحث</button></form><div id="searchStatus" class="search-status" aria-live="polite"></div>
+ <div class="soft-banner" aria-hidden="true"></div>
  <div class="ad" id="ad-top">مساحة إعلانية</div>
  <section id="article"></section>
  <section id="listing">
@@ -126,7 +120,7 @@ const SUPABASE_KEY="sb_publishable_WJj_QJ4nzCGjBeekNAoJ_w_XQ5dJtzY";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const params=new URLSearchParams(location.search);
-let allNews=[];\nlet newsLoaded=false;
+let allNews=[];
 let activeAds=[];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=s=>new Date(s).toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});
@@ -168,40 +162,6 @@ async function loadAds(){
  if(error){console.info('Ads are not configured yet:',error.message);return;}
  activeAds=data||[];
  ['top','middle','bottom','featured','article'].forEach(p=>renderAd(p,activeAds.find(ad=>ad.placement===p)||activeAds.find(ad=>ad.placement==='all')));
-}
-function renderCards(items){$('news').innerHTML=items.length?items.map(storyCard).join(''):'<div class="empty">لا توجد نتائج مطابقة لبحثك.</div>'; $('searchStatus').textContent=items.length?'عدد الأخبار: '+items.length:'';}
-function normalizeSearch(value){
- return String(value||'').toLocaleLowerCase('ar')
-  .replace(/[أإآٱ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')
-  .replace(/[ًٌٍَُِّْـ]/g,'').replace(/\\s+/g,' ').trim();
-}
-function filterNews(term){
- const value=normalizeSearch(term);
- const category=params.get('category');
- if(!newsLoaded){
-  $('searchStatus').textContent='جاري تحميل الأخبار، انتظر لحظة ثم اضغط بحث مرة أخرى.';
-  return;
- }
- if(value){
-  const filtered=allNews.filter(n=>{
-   const text=normalizeSearch([n.title,n.content,n.category].join(' '));
-   return text.includes(value);
-  });
-  $('homeLead').style.display='none';
-  $('categoryDirectory').style.display='none';
-  $('categorySections').style.display='none';
-  $('heading').textContent='نتائج البحث';
-  renderCards(filtered);
-  $('searchStatus').textContent=filtered.length?'تم العثور على '+filtered.length+' خبر':'لم نعثر على أخبار تطابق كلمة البحث.';
- }else{
-  $('heading').textContent=category?'أخبار '+category:'أحدث الأخبار';
-  $('categoryDirectory').style.display=category?'none':'';
-  $('homeLead').style.display=category?'none':'';
-  $('categorySections').style.display=category?'none':'';
-  if(!category)renderCategorySections(allNews);
-  renderCards(category?allNews:allNews.slice(3));
-  $('searchStatus').textContent='';
- }
 }
 function renderCategoryDirectory(){
  const categories=['مصر','عرب وعالم','حوادث','رياضة','اقتصاد','تكنولوجيا','تعليم','صحة','فن وثقافة','منوعات','علوم وفضاء','عام'];
