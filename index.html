@@ -166,7 +166,7 @@ async function loadAds(){
  const {data,error}=await db.from('ads').select('id,title,image_url,target_url,placement,active').eq('active',true).order('created_at',{ascending:false});
  if(error){console.info('Ads are not configured yet:',error.message);return;}
  activeAds=data||[];
- ['top','middle','bottom','featured','article'].forEach(p=>renderAd(p,activeAds.find(ad=>ad.placement===p)));
+ ['top','middle','bottom','featured','article'].forEach(p=>renderAd(p,activeAds.find(ad=>ad.placement==='all')||activeAds.find(ad=>ad.placement===p)));
 }
 function renderCards(items){$('news').innerHTML=items.length?items.map(storyCard).join(''):'<div class="empty">لا توجد نتائج مطابقة لبحثك.</div>'; $('searchStatus').textContent=items.length?'عدد الأخبار: '+items.length:'';}
 function filterNews(term,items){const value=term.trim().toLocaleLowerCase('ar');const filtered=items.filter(n=>(String(n.title)+' '+String(n.content)+' '+String(n.category)).toLocaleLowerCase('ar').includes(value));renderCards(filtered);$('categorySections').style.display=value?'none':'';}
@@ -190,7 +190,7 @@ async function load(){
   if(error||!data){box.innerHTML='<h2>الخبر غير متاح</h2><a class="back-link" href="./">العودة للرئيسية</a>';return}
   document.title=data.title+' | أخبار اليوم';
   box.innerHTML='<span class="tag">'+esc(data.category)+'</span><h1>'+esc(data.title)+'</h1><div class="meta">'+date(data.created_at)+'</div>'+'<img class="article-cover" src="'+esc(data.image_url||categoryPhoto(data.category))+'" alt="'+esc(data.title)+'" onerror="this.onerror=null;this.src=\''+categoryPhoto('')+'\'">'+'<div class="ad" id="ad-article">مساحة إعلانية</div>'+'<div class="article-content">'+esc(data.content)+'</div><a class="back-link" href="./">← العودة إلى الأخبار</a>';
-  renderAd('article',activeAds.find(ad=>ad.placement==='article'));
+  renderAd('article',activeAds.find(ad=>ad.placement==='all')||activeAds.find(ad=>ad.placement==='article'));
   return;
  }
  const category=params.get('category');
@@ -207,8 +207,7 @@ async function load(){
  renderCards(remaining);
  $('searchInput').addEventListener('input',e=>filterNews(e.target.value,remaining));
 }
-loadAds();
-load();
+Promise.all([loadAds()]).then(()=>load());
 </script>
 </body>
 </html>
