@@ -60,7 +60,7 @@ main{max-width:1200px;margin:26px auto;padding:0 20px}
 .side-story h3{font-size:15px;line-height:1.6;margin:7px 0;color:var(--navy)}
 .side-story .meta{margin:4px 0}
 .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.card{background:#fff;border-radius:13px;overflow:hidden;box-shadow:var(--shadow);transition:transform .25s,box-shadow .25s;border:1px solid #e8edf2}
+.card{display:block;color:inherit;background:#fff;border-radius:13px;overflow:hidden;box-shadow:var(--shadow);transition:transform .25s,box-shadow .25s;border:1px solid #e8edf2}
 .card:hover{transform:translateY(-3px);box-shadow:0 12px 30px #102a4318}
 .card img,.card-placeholder{width:100%;height:210px;object-fit:cover;display:block;background:linear-gradient(135deg,#e8edf3,#cbd6e2);transition:transform .55s}.card:hover img{transform:scale(1.045)}.image-placeholder{position:relative;overflow:hidden;background:radial-gradient(circle at 18% 22%,#ffffff24 0 2px,transparent 3px),linear-gradient(135deg,#29465e,#102a43 68%,#183b59);}.image-placeholder:before{content:"";position:absolute;width:48%;height:130%;top:-15%;left:8%;transform:rotate(22deg);background:linear-gradient(90deg,transparent,#ffffff0c,transparent);border-right:1px solid #ffffff20;border-left:1px solid #ffffff12}.image-placeholder:after{content:"أخبار اليوم";position:absolute;inset:0;display:grid;place-items:center;color:#ffffffd9;font-size:clamp(18px,3vw,27px);font-weight:900;letter-spacing:1px;text-shadow:0 3px 12px #0008}.hero .image-placeholder{position:absolute;inset:0;width:100%;height:100%;}.side-story .image-placeholder{width:118px;height:100%;min-height:145px;flex-shrink:0}.card .image-placeholder{height:190px}.article-placeholder{width:100%;height:260px;border-radius:10px;margin:12px 0}
 .card-body{padding:15px 16px 17px}
@@ -151,7 +151,7 @@ const categoryPhoto=category=>{
 const image=(url,title,cls='',category='')=>'<img class="'+cls+'" src="'+esc(url||categoryPhoto(category))+'" alt="'+esc(title||'أخبار اليوم')+'" loading="lazy" onerror="this.onerror=null;this.src=\''+categoryPhoto('')+'\'">';
 $('year').textContent=new Date().getFullYear();
 $('today').textContent=new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-function storyCard(n){return '<article class="card">'+image(n.image_url,n.title,'',n.category)+'<div class="card-body"><span class="category">'+esc(n.category)+'</span><h3>'+esc(n.title)+'</h3><p>'+excerpt(n.content)+'</p><div class="meta">'+date(n.created_at)+'</div><a class="read-more" href="./?id='+encodeURIComponent(n.id)+'">اقرأ التفاصيل ←</a></div></article>'}
+function storyCard(n){return '<a class="card" href="./?id='+encodeURIComponent(n.id)+'">'+image(n.image_url,n.title,'',n.category)+'<div class="card-body"><span class="category">'+esc(n.category)+'</span><h3>'+esc(n.title)+'</h3><p>'+excerpt(n.content)+'</p><div class="meta">'+date(n.created_at)+'</div><span class="read-more">اقرأ التفاصيل ←</span></div></a>'}
 function sideStory(n){return '<a class="side-story" href="./?id='+encodeURIComponent(n.id)+'">'+image(n.image_url,n.title,'',n.category)+'<div class="side-story-body"><span class="category">'+esc(n.category)+'</span><h3>'+esc(n.title)+'</h3><div class="meta">'+date(n.created_at)+'</div></div></a>'}
 function renderAd(placement,ad){
  const box=$('ad-'+placement);if(!box)return;
