@@ -44,8 +44,8 @@ main{max-width:1200px;margin:26px auto;padding:0 20px}
 .section-head h2{font-size:22px;margin:0;color:var(--navy)}
 .section-head span{font-size:12px;color:var(--muted)}
 .lead-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,1fr);gap:18px}
-.hero{position:relative;min-height:390px;border-radius:13px;overflow:hidden;background:linear-gradient(135deg,#29465e,#102a43);box-shadow:var(--shadow);color:#fff;display:flex;align-items:flex-end}
-.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero{position:relative;min-height:420px;border-radius:13px;overflow:hidden;background:linear-gradient(135deg,#29465e,#102a43);box-shadow:var(--shadow);color:#fff;display:flex;align-items:flex-end}
+.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .7s}.hero:hover>img{transform:scale(1.045)}
 .hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(4,17,30,.94),rgba(4,17,30,.06) 78%)}
 .hero-content{position:relative;z-index:1;padding:28px;width:100%}
 .tag{display:inline-block;background:var(--red);color:#fff;padding:4px 10px;border-radius:4px;font-size:12px;font-weight:800}
@@ -55,14 +55,14 @@ main{max-width:1200px;margin:26px auto;padding:0 20px}
 .hero .meta{color:#d0dbe5}
 .side-stories{display:grid;gap:14px}
 .side-story{background:#fff;border-radius:11px;overflow:hidden;display:grid;grid-template-columns:118px 1fr;min-height:145px;box-shadow:var(--shadow)}
-.side-story img{width:118px;height:100%;min-height:145px;object-fit:cover;background:#e2e8ef}
+.side-story img{width:118px;height:100%;min-height:145px;object-fit:cover;background:#e2e8ef;transition:transform .5s}.side-story:hover img{transform:scale(1.06)}
 .side-story-body{padding:12px}
 .side-story h3{font-size:15px;line-height:1.6;margin:7px 0;color:var(--navy)}
 .side-story .meta{margin:4px 0}
 .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.card{background:#fff;border-radius:11px;overflow:hidden;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s}
+.card{background:#fff;border-radius:13px;overflow:hidden;box-shadow:var(--shadow);transition:transform .25s,box-shadow .25s;border:1px solid #e8edf2}
 .card:hover{transform:translateY(-3px);box-shadow:0 12px 30px #102a4318}
-.card img,.card-placeholder{width:100%;height:190px;object-fit:cover;display:block;background:linear-gradient(135deg,#e8edf3,#cbd6e2)}.image-placeholder{position:relative;overflow:hidden;background:radial-gradient(circle at 18% 22%,#ffffff24 0 2px,transparent 3px),linear-gradient(135deg,#29465e,#102a43 68%,#183b59);}.image-placeholder:before{content:"";position:absolute;width:48%;height:130%;top:-15%;left:8%;transform:rotate(22deg);background:linear-gradient(90deg,transparent,#ffffff0c,transparent);border-right:1px solid #ffffff20;border-left:1px solid #ffffff12}.image-placeholder:after{content:"أخبار اليوم";position:absolute;inset:0;display:grid;place-items:center;color:#ffffffd9;font-size:clamp(18px,3vw,27px);font-weight:900;letter-spacing:1px;text-shadow:0 3px 12px #0008}.hero .image-placeholder{position:absolute;inset:0;width:100%;height:100%;}.side-story .image-placeholder{width:118px;height:100%;min-height:145px;flex-shrink:0}.card .image-placeholder{height:190px}.article-placeholder{width:100%;height:260px;border-radius:10px;margin:12px 0}
+.card img,.card-placeholder{width:100%;height:210px;object-fit:cover;display:block;background:linear-gradient(135deg,#e8edf3,#cbd6e2);transition:transform .55s}.card:hover img{transform:scale(1.045)}.image-placeholder{position:relative;overflow:hidden;background:radial-gradient(circle at 18% 22%,#ffffff24 0 2px,transparent 3px),linear-gradient(135deg,#29465e,#102a43 68%,#183b59);}.image-placeholder:before{content:"";position:absolute;width:48%;height:130%;top:-15%;left:8%;transform:rotate(22deg);background:linear-gradient(90deg,transparent,#ffffff0c,transparent);border-right:1px solid #ffffff20;border-left:1px solid #ffffff12}.image-placeholder:after{content:"أخبار اليوم";position:absolute;inset:0;display:grid;place-items:center;color:#ffffffd9;font-size:clamp(18px,3vw,27px);font-weight:900;letter-spacing:1px;text-shadow:0 3px 12px #0008}.hero .image-placeholder{position:absolute;inset:0;width:100%;height:100%;}.side-story .image-placeholder{width:118px;height:100%;min-height:145px;flex-shrink:0}.card .image-placeholder{height:190px}.article-placeholder{width:100%;height:260px;border-radius:10px;margin:12px 0}
 .card-body{padding:15px 16px 17px}
 .category{color:var(--red);font-size:12px;font-weight:900}
 .card h3{font-size:17px;line-height:1.65;margin:7px 0;color:var(--navy)}
@@ -70,7 +70,7 @@ main{max-width:1200px;margin:26px auto;padding:0 20px}
 .read-more{display:inline-flex;align-items:center;gap:5px;color:var(--red);font-size:13px;font-weight:900;margin-top:5px}
 .empty,.error{background:#fff;border-radius:12px;padding:28px;text-align:center;color:#637386;grid-column:1/-1}
 #article{display:none;background:#fff;padding:clamp(18px,4vw,38px);border-radius:13px;box-shadow:var(--shadow);line-height:2}
-#article img{width:100%;max-height:520px;object-fit:cover;border-radius:10px;margin:12px 0}
+#article img.article-cover{width:100%;height:clamp(240px,42vw,520px);object-fit:cover;border-radius:12px;margin:12px 0;box-shadow:0 12px 32px #102a4320}
 #article h1{color:var(--navy);font-size:clamp(25px,4vw,36px);line-height:1.55}
 .article-content{font-size:17px;color:#33475b;white-space:pre-wrap}
 .back-link{display:inline-block;color:var(--red);font-weight:800;margin-top:24px}
@@ -125,16 +125,27 @@ let allNews=[];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=s=>new Date(s).toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});
 const excerpt=s=>{const t=String(s??'');return esc(t.slice(0,135))+(t.length>135?'…':'')};
-const image=(url,title,cls='')=>url?'<img class="'+cls+'" src="'+esc(url)+'" alt="'+esc(title)+'" loading="lazy">':'<div class="card-placeholder image-placeholder '+cls+'" role="img" aria-label="صورة توضيحية لأخبار اليوم"></div>';
+const categoryPhoto=category=>{
+ const photos={
+  'مصر':'photo-1519501025264-65ba15a82390',
+  'سياسة':'photo-1529107386315-e1a2ed48a620',
+  'رياضة':'photo-1461896836934-ється',
+  'اقتصاد':'photo-1486406146926-c627a92ad1ab',
+  'تكنولوجيا':'photo-1518770660439-4636190af475'
+ };
+ const id=photos[String(category||'').trim()]||'photo-1504711434969-e33886168f5c';
+ return 'https://images.unsplash.com/'+id+'?auto=format&fit=crop&w=1400&q=85';
+};
+const image=(url,title,cls='',category='')=>'<img class="'+cls+'" src="'+esc(url||categoryPhoto(category))+'" alt="'+esc(title||'أخبار اليوم')+'" loading="lazy" onerror="this.onerror=null;this.src=\''+categoryPhoto('')+'\'">';
 $('year').textContent=new Date().getFullYear();
 $('today').textContent=new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-function storyCard(n){return '<article class="card">'+image(n.image_url,n.title)+'<div class="card-body"><span class="category">'+esc(n.category)+'</span><h3>'+esc(n.title)+'</h3><p>'+excerpt(n.content)+'</p><div class="meta">'+date(n.created_at)+'</div><a class="read-more" href="./?id='+encodeURIComponent(n.id)+'">اقرأ التفاصيل ←</a></div></article>'}
-function sideStory(n){return '<a class="side-story" href="./?id='+encodeURIComponent(n.id)+'">'+image(n.image_url,n.title)+'<div class="side-story-body"><span class="category">'+esc(n.category)+'</span><h3>'+esc(n.title)+'</h3><div class="meta">'+date(n.created_at)+'</div></div></a>'}
+function storyCard(n){return '<article class="card">'+image(n.image_url,n.title,'',n.category)+'<div class="card-body"><span class="category">'+esc(n.category)+'</span><h3>'+esc(n.title)+'</h3><p>'+excerpt(n.content)+'</p><div class="meta">'+date(n.created_at)+'</div><a class="read-more" href="./?id='+encodeURIComponent(n.id)+'">اقرأ التفاصيل ←</a></div></article>'}
+function sideStory(n){return '<a class="side-story" href="./?id='+encodeURIComponent(n.id)+'">'+image(n.image_url,n.title,'',n.category)+'<div class="side-story-body"><span class="category">'+esc(n.category)+'</span><h3>'+esc(n.title)+'</h3><div class="meta">'+date(n.created_at)+'</div></div></a>'}
 function renderCards(items){$('news').innerHTML=items.length?items.map(storyCard).join(''):'<div class="empty">لا توجد نتائج مطابقة لبحثك.</div>'; $('searchStatus').textContent=items.length?'عدد الأخبار: '+items.length:'';}
 function filterNews(term,items){const value=term.trim().toLocaleLowerCase('ar');const filtered=items.filter(n=>(String(n.title)+' '+String(n.content)+' '+String(n.category)).toLocaleLowerCase('ar').includes(value));renderCards(filtered);}
 function renderLead(items){
  const first=items[0],others=items.slice(1,3);
- $('leadLayout').innerHTML='<a class="hero" href="./?id='+encodeURIComponent(first.id)+'">'+image(first.image_url,first.title)+'<div class="hero-content"><span class="tag">'+esc(first.category)+'</span><h2>'+esc(first.title)+'</h2><p>'+excerpt(first.content)+'</p><div class="meta">'+date(first.created_at)+' · اقرأ الخبر كاملاً</div></div></a><div class="side-stories">'+(others.length?others.map(sideStory).join(''):'<div class="empty">أضف المزيد من الأخبار لتظهر هنا.</div>')+'</div>';
+ $('leadLayout').innerHTML='<a class="hero" href="./?id='+encodeURIComponent(first.id)+'">'+image(first.image_url,first.title,'',first.category)+'<div class="hero-content"><span class="tag">'+esc(first.category)+'</span><h2>'+esc(first.title)+'</h2><p>'+excerpt(first.content)+'</p><div class="meta">'+date(first.created_at)+' · اقرأ الخبر كاملاً</div></div></a><div class="side-stories">'+(others.length?others.map(sideStory).join(''):'<div class="empty">أضف المزيد من الأخبار لتظهر هنا.</div>')+'</div>';
 }
 async function load(){
  const id=params.get('id');
@@ -143,7 +154,7 @@ async function load(){
   const {data,error}=await db.from('news').select('*').eq('id',id).eq('published',true).single();
   if(error||!data){box.innerHTML='<h2>الخبر غير متاح</h2><a class="back-link" href="./">العودة للرئيسية</a>';return}
   document.title=data.title+' | أخبار اليوم';
-  box.innerHTML='<span class="tag">'+esc(data.category)+'</span><h1>'+esc(data.title)+'</h1><div class="meta">'+date(data.created_at)+'</div>'+(data.image_url?'<img src="'+esc(data.image_url)+'" alt="'+esc(data.title)+'">':'<div class="article-placeholder image-placeholder" role="img" aria-label="صورة توضيحية لأخبار اليوم"></div>')+'<div class="article-content">'+esc(data.content)+'</div><a class="back-link" href="./">← العودة إلى الأخبار</a>';
+  box.innerHTML='<span class="tag">'+esc(data.category)+'</span><h1>'+esc(data.title)+'</h1><div class="meta">'+date(data.created_at)+'</div>'+'<img class="article-cover" src="'+esc(data.image_url||categoryPhoto(data.category))+'" alt="'+esc(data.title)+'" onerror="this.onerror=null;this.src=\''+categoryPhoto('')+'\'">'+'<div class="article-content">'+esc(data.content)+'</div><a class="back-link" href="./">← العودة إلى الأخبار</a>';
   return;
  }
  const category=params.get('category');
