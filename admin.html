@@ -9,15 +9,10 @@
 <section id="dashboard" class="hidden">
 <div class="panel"><div class="row"><h2>إضافة / تعديل خبر</h2><button class="secondary" id="logoutBtn">تسجيل الخروج</button></div>
 <form id="newsForm"><input id="newsId" type="hidden"><label>عنوان الخبر</label><input id="title" required maxlength="180"><label>التصنيف</label><select id="category"><option>مصر</option><option>عرب وعالم</option><option>سياسة</option><option>حوادث</option><option>رياضة</option><option>اقتصاد</option><option>تكنولوجيا</option><option>تعليم</option><option>صحة</option><option>فن وثقافة</option><option>منوعات</option><option>علوم وفضاء</option><option>عام</option></select><label>محتوى الخبر</label><textarea id="content" required></textarea><label>صورة الخبر (اختياري)</label><input id="image" type="file" accept="image/*"><label><input id="published" type="checkbox" checked style="width:auto"> نشر الخبر</label><div class="row"><button type="submit">حفظ الخبر</button><button type="button" class="secondary" id="resetBtn">تفريغ الحقول</button></div></form></div>
-<div class="panel"><h2>إدارة الإعلانات</h2><p class="muted">أضف إعلانًا مستقلًا لكل مكان. كل إعلان له صورته ورابطه ويمكن تعديله أو إيقافه دون التأثير على الإعلانات الأخرى.</p>
-<form id="adForm"><input id="adId" type="hidden"><input id="adImageUrl" type="hidden">
-<label>اسم الإعلان</label><input id="adTitle" required maxlength="120" placeholder="مثال: متجر ...">
-<label>صورة الإعلان</label><input id="adImage" type="file" accept="image/*">
-<label>رابط الإعلان</label><input id="adTarget" type="url" required placeholder="https://example.com">
-<label for="adPlacement">مكان ظهور الإعلان</label><select id="adPlacement" required><option value="top">أعلى الصفحة الرئيسية</option><option value="middle">بين الأخبار</option><option value="bottom">أسفل الصفحة الرئيسية</option><option value="featured">بعد قسم أهم الأخبار</option><option value="article">داخل صفحة قراءة الخبر</option></select>
-<label><input id="adActive" type="checkbox" checked style="width:auto"> إعلان نشط</label>
-<div class="row"><button type="submit">حفظ الإعلان</button><button type="button" class="secondary" id="adResetBtn">تفريغ الحقول</button></div></form>
-<div class="status">ملحوظة: صورة الإعلان تُرفع إلى مساحة الصور الموجودة بالفعل.</div><h3>الإعلانات الحالية</h3><div id="adsItems">جاري تحميل الإعلانات...</div></div>
+<div class="panel"><h2>إدارة الإعلانات</h2><p class="muted">كل مكان له خانة مستقلة. املأ بيانات الإعلان في الخانة الخاصة بمكانه ثم اضغط حفظ.</p>
+<div id="adSlots"></div>
+<div class="status">ملحوظة: صورة كل إعلان تُرفع إلى مساحة الصور الموجودة بالفعل. يمكنك إيقاف أي إعلان بشكل مستقل.</div>
+<h3>الإعلانات الحالية</h3><div id="adsItems">جاري تحميل الإعلانات...</div></div>
 <div class="panel"><h2>الأخبار الموجودة</h2><div id="items">جاري التحميل...</div></div>
 </section></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -67,15 +62,35 @@ async function loadItems(){
 async function loadAds(){
  const {data,error}=await db.from('ads').select('*').order('created_at',{ascending:false});
  if(error){$('adsItems').textContent='تعذر تحميل الإعلانات. تأكد من إنشاء جدول ads في Supabase: '+error.message;return;}
- if(!data?.length){$('adsItems').textContent='لا توجد إعلانات بعد.';return;}
- const places={all:'جميع الأماكن الخمسة (إعلان قديم)',top:'أعلى الصفحة الرئيسية',middle:'بين الأخبار',bottom:'أسفل الصفحة الرئيسية',featured:'بعد قسم أهم الأخبار',article:'داخل صفحة قراءة الخبر'};
- $('adsItems').innerHTML=data.map(ad=>'<div class="item"><b>'+safe(ad.title)+'</b><p class="muted">'+safe(places[ad.placement]||ad.placement)+' · '+(ad.active?'نشط':'متوقف')+'</p><button data-ad-edit="'+ad.id+'">تعديل</button><button class="danger" data-ad-delete="'+ad.id+'">حذف</button></div>').join('');
- document.querySelectorAll('[data-ad-edit]').forEach(b=>b.onclick=()=>editAd(data.find(x=>String(x.id)===b.dataset.adEdit)));
+ const ads=data||[];
+ const places={all:'إعلان قديم (كان يظهر في كل الأماكن)',top:'أعلى الصفحة الرئيسية',middle:'بين الأخبار',bottom:'أسفل الصفحة الرئيسية',featured:'بعد قسم أهم الأخبار',article:'داخل صفحة قراءة الخبر'};
+ adPlaces.forEach(p=>{
+  const ad=ads.find(x=>x.placement===p.key);
+  const form=document.querySelector('[data-ad-form="'+p.key+'"]');
+  if(!form)return;
+  form.querySelector('[name="adId"]').value=ad?.id||'';
+  form.querySelector('[name="adTitle"]').value=ad?.title||'';
+  form.querySelector('[name="adTarget"]').value=ad?.target_url||'';
+  form.querySelector('[name="adImageUrl"]').value=ad?.image_url||'';
+  form.querySelector('[name="adActive"]').checked=ad?!!ad.active:true;
+ });
+ if(!ads.length){$('adsItems').textContent='لا توجد إعلانات محفوظة بعد.';return;}
+ $('adsItems').innerHTML=ads.map(ad=>'<div class="item"><b>'+safe(ad.title)+'</b><p class="muted">'+safe(places[ad.placement]||ad.placement)+' · '+(ad.active?'نشط':'متوقف')+'</p><button data-ad-edit="'+ad.id+'">تعديل</button><button class="danger" data-ad-delete="'+ad.id+'">حذف</button></div>').join('');
+ document.querySelectorAll('[data-ad-edit]').forEach(b=>b.onclick=()=>editAd(ads.find(x=>String(x.id)===b.dataset.adEdit)));
  document.querySelectorAll('[data-ad-delete]').forEach(b=>b.onclick=()=>deleteAd(b.dataset.adDelete));
 }
 function editAd(ad){
- $('adId').value=ad.id;$('adTitle').value=ad.title;$('adTarget').value=ad.target_url;$('adPlacement').value=ad.placement==='all'?'top':(ad.placement||'top');$('adActive').checked=ad.active;$('adImageUrl').value=ad.image_url;$('adImage').value='';
- window.scrollTo({top:0,behavior:'smooth'});say('تعديل الإعلان: '+ad.title);
+ const slot=ad.placement==='all'?'top':ad.placement;
+ const form=document.querySelector('[data-ad-form="'+slot+'"]');
+ if(!form){say('هذا الإعلان القديم لا يرتبط بخانة مستقلة.');return;}
+ form.querySelector('[name="adId"]').value=ad.id;
+ form.querySelector('[name="adTitle"]').value=ad.title||'';
+ form.querySelector('[name="adTarget"]').value=ad.target_url||'';
+ form.querySelector('[name="adImageUrl"]').value=ad.image_url||'';
+ form.querySelector('[name="adActive"]').checked=!!ad.active;
+ form.querySelector('[name="adImage"]').value='';
+ window.scrollTo({top:form.getBoundingClientRect().top+window.scrollY-20,behavior:'smooth'});
+ say('تعديل إعلان: '+ad.title);
 }
 async function deleteAd(id){
  if(!confirm('هل تريد حذف هذا الإعلان؟'))return;
@@ -83,29 +98,47 @@ async function deleteAd(id){
  if(error){say('فشل حذف الإعلان: '+error.message);return;}
  say('تم حذف الإعلان.');await loadAds();
 }
-$('adForm').onsubmit=async e=>{
- e.preventDefault();say('جارٍ حفظ الإعلان...');
+const adPlaces=[
+ {key:'top',title:'إعلان أعلى الصفحة',label:'أعلى الصفحة الرئيسية'},
+ {key:'middle',title:'إعلان بين الأخبار',label:'بين الأخبار'},
+ {key:'bottom',title:'إعلان أسفل الصفحة',label:'أسفل الصفحة الرئيسية'},
+ {key:'featured',title:'إعلان بعد أهم الأخبار',label:'بعد قسم أهم الأخبار'},
+ {key:'article',title:'إعلان داخل الخبر',label:'داخل صفحة قراءة الخبر'}
+];
+function renderAdSlots(){
+ $('adSlots').innerHTML=adPlaces.map(p=>'<form class="item ad-slot" data-ad-form="'+p.key+'"><h3>'+p.title+'</h3><input type="hidden" name="adId"><input type="hidden" name="adImageUrl"><label>اسم الإعلان</label><input name="adTitle" required maxlength="120" placeholder="اكتب اسم الإعلان"><label>صورة الإعلان</label><input name="adImage" type="file" accept="image/*"><label>رابط الإعلان</label><input name="adTarget" type="url" required placeholder="https://example.com"><label><input name="adActive" type="checkbox" checked style="width:auto"> إعلان نشط</label><button type="submit">حفظ هذا الإعلان</button><button type="button" class="secondary" data-reset-slot>تفريغ هذه الخانة</button><p class="muted">المكان: '+p.label+'</p></form>').join('');
+ document.querySelectorAll('[data-ad-form]').forEach(form=>{
+  form.onsubmit=saveSlotAd;
+  form.querySelector('[data-reset-slot]').onclick=()=>{form.reset();form.querySelector('[name="adId"]').value='';form.querySelector('[name="adImageUrl"]').value='';};
+ });
+}
+async function saveSlotAd(e){
+ e.preventDefault();
+ const form=e.currentTarget,place=form.dataset.adForm;
+ say('جارٍ حفظ إعلان '+place+'...');
  const {data:{session},error:sessionError}=await db.auth.getSession();
  if(sessionError||!session||!admin(session.user)){say('جلسة المدير غير نشطة. سجّل الدخول مرة أخرى.');return;}
- let imageUrl=$('adImageUrl').value||null;
- const file=$('adImage').files[0];
+ let imageUrl=form.querySelector('[name="adImageUrl"]').value||null;
+ const file=form.querySelector('[name="adImage"]').files[0];
  if(file){
   if(file.size>5*1024*1024){say('حجم صورة الإعلان أكبر من 5 ميجابايت.');return;}
   const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'');
-  const path='ads/'+Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;
+  const path='ads/'+place+'-'+Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;
   const {error:uploadError}=await db.storage.from('news-images').upload(path,file,{upsert:false,contentType:file.type});
   if(uploadError){say('تعذر رفع صورة الإعلان: '+uploadError.message);return;}
   imageUrl=db.storage.from('news-images').getPublicUrl(path).data.publicUrl;
  }
- if(!imageUrl){say('اختَر صورة للإعلان أولاً.');return;}
- const target=$('adTarget').value.trim();
+ if(!imageUrl){say('اختَر صورة لهذا الإعلان أولاً.');return;}
+ const target=form.querySelector('[name="adTarget"]').value.trim();
  if(!(target.startsWith('https://')||target.startsWith('http://'))){say('اكتب رابطًا يبدأ بـ https:// أو http://');return;}
- const payload={title:$('adTitle').value.trim(),image_url:imageUrl,target_url:target,placement:$('adPlacement').value,active:$('adActive').checked};
- const id=$('adId').value;
+ const payload={title:form.querySelector('[name="adTitle"]').value.trim(),image_url:imageUrl,target_url:target,placement:place,active:form.querySelector('[name="adActive"]').checked};
+ const id=form.querySelector('[name="adId"]').value;
  const result=id?await db.from('ads').update(payload).eq('id',id):await db.from('ads').insert(payload);
  if(result.error){say('فشل حفظ الإعلان: '+result.error.message);return;}
- say('تم حفظ الإعلان بنجاح.');$('adForm').reset();$('adId').value='';$('adImageUrl').value='';await loadAds();
-};
+ say('تم حفظ إعلان '+place+' بنجاح.');
+ form.reset();form.querySelector('[name="adId"]').value='';form.querySelector('[name="adImageUrl"]').value='';
+ await loadAds();
+}
 function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function edit(n){$('newsId').value=n.id;$('title').value=n.title;$('content').value=n.content;$('category').value=n.category;$('published').checked=n.published;$('image').value='';window.scrollTo({top:0,behavior:'smooth'});say('تعديل الخبر رقم '+n.id+'.')}
 async function removeNews(id){if(!confirm('هل تريد حذف هذا الخبر؟'))return;const {error}=await db.from('news').delete().eq('id',id);if(error){say('فشل الحذف: '+error.message);return}say('تم حذف الخبر.');await loadItems()}
