@@ -42,7 +42,7 @@ main{max-width:1200px;margin:26px auto;padding:0 20px}
 .ad{background:#fff;border:1px dashed #c7d0da;border-radius:10px;text-align:center;padding:16px;color:#8a97a6;font-size:13px;margin:22px 0}
 .section-head{display:flex;align-items:center;justify-content:space-between;border-right:5px solid var(--red);padding:2px 12px 2px 0;margin:28px 0 16px}
 .section-head h2{font-size:22px;margin:0;color:var(--navy)}
-.section-head span{font-size:12px;color:var(--muted)}.category-section{margin:30px 0}.category-more{font-size:12px;color:var(--red);font-weight:900;white-space:nowrap}.category-section .cards{grid-template-columns:repeat(3,minmax(0,1fr))}.category-section .card img{height:180px}
+.section-head span{font-size:12px;color:var(--muted)}.category-section{margin:30px 0}.category-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}.category-tile{position:relative;display:block;height:150px;border-radius:13px;overflow:hidden;background:var(--navy);box-shadow:var(--shadow);isolation:isolate}.category-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}.category-tile:hover img{transform:scale(1.08)}.category-tile:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(4,17,30,.9),rgba(4,17,30,.04) 85%);z-index:0}.category-tile strong{position:absolute;right:14px;bottom:12px;z-index:1;color:white;font-size:18px;text-shadow:0 2px 8px #0009}.category-more{font-size:12px;color:var(--red);font-weight:900;white-space:nowrap}.category-section .cards{grid-template-columns:repeat(3,minmax(0,1fr))}.category-section .card img{height:180px}
 .lead-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,1fr);gap:18px}
 .hero{position:relative;min-height:420px;border-radius:13px;overflow:hidden;background:linear-gradient(135deg,#29465e,#102a43);box-shadow:var(--shadow);color:#fff;display:flex;align-items:flex-end}
 .hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .7s}.hero:hover>img{transform:scale(1.045)}
@@ -79,8 +79,8 @@ footer{margin-top:55px;background:var(--navy2);color:#d9e3ed}
 .footer-brand{font-size:21px;font-weight:900;color:#fff}
 footer p{margin:5px 0 0;font-size:13px;color:#b9c8d6}
 footer a{color:#fff;text-decoration:underline;text-decoration-color:#71869b}
-@media(max-width:800px){.lead-layout{grid-template-columns:1fr}.hero{min-height:340px}.side-stories{grid-template-columns:repeat(2,minmax(0,1fr))}.side-story{grid-template-columns:95px 1fr}.side-story img{width:95px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:560px){.masthead-inner{padding:17px 15px}.brand h1{font-size:25px}.brand-mark{width:48px;height:48px}.head-note{display:none}main{padding:0 13px;margin:18px auto}.breaking-inner{padding:8px 13px}.hero{min-height:310px}.hero-content{padding:19px}.side-stories{grid-template-columns:1fr}.side-story{min-height:120px;grid-template-columns:105px 1fr}.side-story img{width:105px;min-height:120px}.cards{grid-template-columns:1fr 1fr;gap:11px}.card img,.card-placeholder{height:125px}.card-body{padding:11px}.card h3{font-size:14px}.card p{font-size:12px}.section-head h2{font-size:19px}}
+@media(max-width:800px){.category-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}.lead-layout{grid-template-columns:1fr}.hero{min-height:340px}.side-stories{grid-template-columns:repeat(2,minmax(0,1fr))}.side-story{grid-template-columns:95px 1fr}.side-story img{width:95px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.category-tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.category-tile{height:125px}.category-tile strong{font-size:15px}.masthead-inner{padding:17px 15px}.brand h1{font-size:25px}.brand-mark{width:48px;height:48px}.head-note{display:none}main{padding:0 13px;margin:18px auto}.breaking-inner{padding:8px 13px}.hero{min-height:310px}.hero-content{padding:19px}.side-stories{grid-template-columns:1fr}.side-story{min-height:120px;grid-template-columns:105px 1fr}.side-story img{width:105px;min-height:120px}.cards{grid-template-columns:1fr 1fr;gap:11px}.card img,.card-placeholder{height:125px}.card-body{padding:11px}.card h3{font-size:14px}.card p{font-size:12px}.section-head h2{font-size:19px}}
 @media(max-width:370px){.cards{grid-template-columns:1fr}.hero{min-height:280px}}
 </style>
 </head>
@@ -104,6 +104,7 @@ footer a{color:#fff;text-decoration:underline;text-decoration-color:#71869b}
  <div class="ad">مساحة إعلانية</div>
  <section id="article"></section>
  <section id="listing">
+  <section id="categoryDirectory" class="category-directory"><div class="section-head"><h2>استكشف أقسام الأخبار</h2><span>اختر القسم الذي يهمك</span></div><div id="categoryTiles" class="category-tiles"></div></section>
   <div id="homeLead">
    <div class="section-head"><h2>أهم الأخبار</h2><span>أبرز ما يحدث الآن</span></div>
    <div id="leadLayout" class="lead-layout"><div class="empty">جاري تحميل الأخبار...</div></div>
@@ -151,6 +152,10 @@ function storyCard(n){return '<article class="card">'+image(n.image_url,n.title,
 function sideStory(n){return '<a class="side-story" href="./?id='+encodeURIComponent(n.id)+'">'+image(n.image_url,n.title,'',n.category)+'<div class="side-story-body"><span class="category">'+esc(n.category)+'</span><h3>'+esc(n.title)+'</h3><div class="meta">'+date(n.created_at)+'</div></div></a>'}
 function renderCards(items){$('news').innerHTML=items.length?items.map(storyCard).join(''):'<div class="empty">لا توجد نتائج مطابقة لبحثك.</div>'; $('searchStatus').textContent=items.length?'عدد الأخبار: '+items.length:'';}
 function filterNews(term,items){const value=term.trim().toLocaleLowerCase('ar');const filtered=items.filter(n=>(String(n.title)+' '+String(n.content)+' '+String(n.category)).toLocaleLowerCase('ar').includes(value));renderCards(filtered);$('categorySections').style.display=value?'none':'';}
+function renderCategoryDirectory(){
+ const categories=['مصر','عرب وعالم','سياسة','حوادث','رياضة','اقتصاد','تكنولوجيا','تعليم','صحة','فن وثقافة','منوعات','علوم وفضاء','عام'];
+ $('categoryTiles').innerHTML=categories.map(cat=>'<a class="category-tile" href="./?category='+encodeURIComponent(cat)+'">'+image('',cat,'',cat)+'<strong>'+esc(cat)+'</strong></a>').join('');
+}
 function renderCategorySections(items){
  const categories=['مصر','عرب وعالم','سياسة','حوادث','رياضة','اقتصاد','تكنولوجيا','تعليم','صحة','فن وثقافة','منوعات','علوم وفضاء','عام'];
  $('categorySections').innerHTML=categories.map(cat=>{const group=items.filter(n=>n.category===cat).slice(0,3);if(!group.length)return '';return '<section class="category-section"><div class="section-head"><h2>'+esc(cat)+'</h2><a class="category-more" href="./?category='+encodeURIComponent(cat)+'">كل أخبار القسم ←</a></div><div class="cards">'+group.map(storyCard).join('')+'</div></section>';}).join('');
@@ -170,13 +175,14 @@ async function load(){
   return;
  }
  const category=params.get('category');
- if(category){$('homeLead').style.display='none';$('heading').textContent='أخبار '+category;document.querySelectorAll('#mainNav a').forEach(a=>a.classList.toggle('active',a.dataset.cat===category));}
+ if(category){$('homeLead').style.display='none';$('categoryDirectory').style.display='none';$('heading').textContent='أخبار '+category;document.querySelectorAll('#mainNav a').forEach(a=>a.classList.toggle('active',a.dataset.cat===category));}
  let q=db.from('news').select('id,title,content,image_url,category,created_at').eq('published',true).order('created_at',{ascending:false});
  if(category)q=q.eq('category',category);
  const {data,error}=await q;
  if(error){$('news').innerHTML='<div class="error">تعذر تحميل الأخبار حالياً. حاول تحديث الصفحة بعد قليل.</div>';if(!category)$('leadLayout').innerHTML='<div class="error">تعذر تحميل الأخبار حالياً.</div>';return}
  if(!data?.length){$('news').innerHTML='<div class="empty">لا توجد أخبار منشورة حالياً.</div>';if(!category)$('leadLayout').innerHTML='<div class="empty">سيظهر الخبر الرئيسي هنا فور نشر أول خبر.</div>';$('ticker').textContent='لا توجد أخبار عاجلة حالياً';return}
  allNews=data;
+ if(!category)renderCategoryDirectory();
  $('ticker').textContent=data.slice(0,5).map(n=>n.title).join('　●　');
  if(!category){renderLead(data);renderCategorySections(data);}
  const remaining=category?data:data.slice(3);
