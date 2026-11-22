@@ -146,7 +146,7 @@ const categoryPhoto=category=>{
  const id=photos[String(category||'').trim()]||'photo-1504711434969-e33886168f5c';
  return 'https://images.unsplash.com/'+id+'?auto=format&fit=crop&w=1400&q=85';
 };
-const image=(url,title,cls='',category='')=>'<img class="'+cls+'" src="'+esc(url||categoryPhoto(category))+'" alt="'+esc(title||'أخبار اليوم')+'" loading="lazy" onerror="this.onerror=null;this.src=\''+categoryPhoto('')+'\'">';
+const image=(url,title,cls='',category='')=>'<img class="'+cls+'" src="'+esc(url||categoryPhoto(category))+'" alt="'+esc(title||'أخبار اليوم')+'" loading="lazy">';
 $('year').textContent=new Date().getFullYear();
 $('today').textContent=new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 function storyCard(n){return '<a class="card" href="./?id='+encodeURIComponent(n.id)+'">'+image(n.image_url,n.title,'',n.category)+'<div class="card-body"><span class="category">'+esc(n.category)+'</span><h3>'+esc(n.title)+'</h3><p>'+excerpt(n.content)+'</p><div class="meta">'+date(n.created_at)+'</div><span class="read-more">اقرأ التفاصيل ←</span></div></a>'}
