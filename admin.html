@@ -50,7 +50,7 @@ $('loginBtn').onclick=async()=>{
 };
 $('logoutBtn').onclick=async()=>{activeSession=null;await db.auth.signOut();await check()};
 $('resetBtn').onclick=()=>{$('newsForm').reset();$('newsId').value=''};
-$('adResetBtn').onclick=()=>{$('adForm').reset();$('adId').value='';$('adImageUrl').value='';};
+
 async function loadItems(){
  const {data,error}=await db.from('news').select('*').order('created_at',{ascending:false});
  if(error){$('items').textContent='خطأ في تحميل الأخبار: '+error.message;return}
@@ -159,6 +159,8 @@ $('newsForm').onsubmit=async e=>{
  if(result.error){say('فشل الحفظ: '+result.error.message);return}
  say('تم حفظ الخبر بنجاح.');$('newsForm').reset();$('newsId').value='';await loadItems();
 };
-// فحص الجلسة مرة واحدة عند فتح الصفحة؛ لا نعيد إظهار شاشة الدخول أثناء حدث تسجيل الدخول.
+// إنشاء خانات الإعلانات الخمس عند فتح لوحة الإدارة.
+renderAdSlots();
+// فحص الجلسة مرة واحدة عند فتح الصفحة.
 check();
 </script></body></html>
