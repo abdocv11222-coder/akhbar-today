@@ -1,53 +1,151 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>أخبار اليوم | أحدث الأخبار</title>
-<meta name="description" content="تابع أحدث الأخبار من مصر والعالم في أخبار اليوم">
+<meta name="description" content="أخبار مصر والعالم والرياضة والاقتصاد والتكنولوجيا لحظة بلحظة">
+<meta name="theme-color" content="#102a43">
 <style>
-:root{--navy:#102a43;--blue:#1769aa;--bg:#f3f6fa;--ink:#172b4d}*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink)}header{background:linear-gradient(120deg,#102a43,#1769aa);color:#fff;padding:28px 16px;text-align:center}header h1{margin:0 0 8px;font-size:34px}header p{margin:0;color:#e5efff}nav{background:#0b1f33;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:12px}nav a{color:#fff;text-decoration:none;padding:9px 14px;border-radius:8px}nav a:hover,nav a.active{background:#1769aa}main{max-width:1100px;margin:24px auto;padding:0 15px}.ad{background:#fff;border:1px dashed #b8c5d4;border-radius:12px;padding:22px;text-align:center;color:#718096;margin:18px 0}.section-title{font-size:22px;margin:25px 0 14px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 5px 18px #102a4310}.card img{width:100%;height:180px;object-fit:cover;background:#e2e8f0}.card-body{padding:16px}.category{color:#1769aa;font-size:13px;font-weight:bold}.card h3{margin:8px 0;line-height:1.6}.card p{color:#526579;line-height:1.8;margin:8px 0}.card a{color:#1769aa;text-decoration:none;font-weight:bold}.meta{font-size:12px;color:#8492a6}.empty,.error{background:#fff;border-radius:12px;padding:25px;text-align:center;color:#526579}#article{display:none;background:#fff;padding:24px;border-radius:14px;line-height:2}#article img{width:100%;max-height:420px;object-fit:cover;border-radius:12px}footer{background:#102a43;color:#fff;text-align:center;padding:24px;margin-top:45px}footer a{color:#d9eaff}@media(max-width:600px){header h1{font-size:27px}}
+:root{--navy:#102a43;--navy2:#0b1f33;--red:#c62828;--red2:#a91f1f;--paper:#f4f6f9;--ink:#172b3d;--muted:#718096;--line:#e5eaf0;--white:#fff;--shadow:0 8px 28px rgba(16,42,67,.09)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.7}
+a{color:inherit;text-decoration:none}
+.topline{height:5px;background:linear-gradient(90deg,var(--red) 0 28%,var(--navy) 28% 100%)}
+.masthead{background:var(--navy);color:#fff}
+.masthead-inner{max-width:1200px;margin:auto;padding:22px 20px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:13px}
+.brand-mark{width:52px;height:52px;border-radius:12px;background:var(--red);display:grid;place-items:center;font-size:27px;font-weight:900;box-shadow:0 5px 16px #0003}
+.brand h1{margin:0;font-size:30px;line-height:1.2;letter-spacing:-1px}
+.brand p{margin:5px 0 0;color:#d7e2ee;font-size:13px}
+.head-note{text-align:left;color:#d7e2ee;font-size:13px}
+.head-note strong{display:block;color:#fff;font-size:15px}
+.nav-wrap{background:var(--navy2);border-top:1px solid #ffffff18}
+nav{max-width:1200px;margin:auto;display:flex;align-items:center;gap:4px;padding:8px 16px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav a{color:#eaf0f6;white-space:nowrap;padding:9px 16px;border-radius:7px;font-size:14px;font-weight:700}
+nav a:hover,nav a.active{background:var(--red);color:#fff}
+.breaking{background:var(--red);color:#fff}
+.breaking-inner{max-width:1200px;margin:auto;display:flex;align-items:center;gap:15px;padding:9px 20px;min-height:45px}
+.breaking-label{background:#fff;color:var(--red);font-weight:900;font-size:13px;padding:3px 10px;border-radius:4px;white-space:nowrap}
+#ticker{font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+main{max-width:1200px;margin:26px auto;padding:0 20px}
+.ad{background:#fff;border:1px dashed #c7d0da;border-radius:10px;text-align:center;padding:16px;color:#8a97a6;font-size:13px;margin:22px 0}
+.section-head{display:flex;align-items:center;justify-content:space-between;border-right:5px solid var(--red);padding:2px 12px 2px 0;margin:28px 0 16px}
+.section-head h2{font-size:22px;margin:0;color:var(--navy)}
+.section-head span{font-size:12px;color:var(--muted)}
+.lead-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,1fr);gap:18px}
+.hero{position:relative;min-height:390px;border-radius:13px;overflow:hidden;background:linear-gradient(135deg,#29465e,#102a43);box-shadow:var(--shadow);color:#fff;display:flex;align-items:flex-end}
+.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(4,17,30,.94),rgba(4,17,30,.06) 78%)}
+.hero-content{position:relative;z-index:1;padding:28px;width:100%}
+.tag{display:inline-block;background:var(--red);color:#fff;padding:4px 10px;border-radius:4px;font-size:12px;font-weight:800}
+.hero h2{font-size:clamp(23px,3vw,34px);line-height:1.5;margin:12px 0 8px}
+.hero p{margin:0;color:#e1e9f0;font-size:14px;max-width:750px}
+.meta{font-size:12px;color:#8795a5;margin-top:12px}
+.hero .meta{color:#d0dbe5}
+.side-stories{display:grid;gap:14px}
+.side-story{background:#fff;border-radius:11px;overflow:hidden;display:grid;grid-template-columns:118px 1fr;min-height:145px;box-shadow:var(--shadow)}
+.side-story img{width:118px;height:100%;min-height:145px;object-fit:cover;background:#e2e8ef}
+.side-story-body{padding:12px}
+.side-story h3{font-size:15px;line-height:1.6;margin:7px 0;color:var(--navy)}
+.side-story .meta{margin:4px 0}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.card{background:#fff;border-radius:11px;overflow:hidden;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 30px #102a4318}
+.card img,.card-placeholder{width:100%;height:190px;object-fit:cover;display:block;background:linear-gradient(135deg,#e4eaf0,#cbd5df)}
+.card-body{padding:15px 16px 17px}
+.category{color:var(--red);font-size:12px;font-weight:900}
+.card h3{font-size:17px;line-height:1.65;margin:7px 0;color:var(--navy)}
+.card p{font-size:13px;line-height:1.8;color:#617184;margin:7px 0 10px}
+.read-more{display:inline-flex;align-items:center;gap:5px;color:var(--red);font-size:13px;font-weight:900;margin-top:5px}
+.empty,.error{background:#fff;border-radius:12px;padding:28px;text-align:center;color:#637386;grid-column:1/-1}
+#article{display:none;background:#fff;padding:clamp(18px,4vw,38px);border-radius:13px;box-shadow:var(--shadow);line-height:2}
+#article img{width:100%;max-height:520px;object-fit:cover;border-radius:10px;margin:12px 0}
+#article h1{color:var(--navy);font-size:clamp(25px,4vw,36px);line-height:1.55}
+.article-content{font-size:17px;color:#33475b;white-space:pre-wrap}
+.back-link{display:inline-block;color:var(--red);font-weight:800;margin-top:24px}
+footer{margin-top:55px;background:var(--navy2);color:#d9e3ed}
+.footer-inner{max-width:1200px;margin:auto;padding:30px 20px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.footer-brand{font-size:21px;font-weight:900;color:#fff}
+footer p{margin:5px 0 0;font-size:13px;color:#b9c8d6}
+footer a{color:#fff;text-decoration:underline;text-decoration-color:#71869b}
+@media(max-width:800px){.lead-layout{grid-template-columns:1fr}.hero{min-height:340px}.side-stories{grid-template-columns:repeat(2,minmax(0,1fr))}.side-story{grid-template-columns:95px 1fr}.side-story img{width:95px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.masthead-inner{padding:17px 15px}.brand h1{font-size:25px}.brand-mark{width:44px;height:44px}.head-note{display:none}main{padding:0 13px;margin:18px auto}.breaking-inner{padding:8px 13px}.hero{min-height:310px}.hero-content{padding:19px}.side-stories{grid-template-columns:1fr}.side-story{min-height:120px;grid-template-columns:105px 1fr}.side-story img{width:105px;min-height:120px}.cards{grid-template-columns:1fr 1fr;gap:11px}.card img,.card-placeholder{height:125px}.card-body{padding:11px}.card h3{font-size:14px}.card p{font-size:12px}.section-head h2{font-size:19px}}
+@media(max-width:370px){.cards{grid-template-columns:1fr}.hero{min-height:280px}}
 </style>
 </head>
 <body>
-<header><h1>أخبار اليوم</h1><p>من قلب الحدث.. أخبار تهمك كل يوم</p></header>
-<nav><a href="./" class="active">الرئيسية</a><a href="./?category=مصر">مصر</a><a href="./?category=سياسة">سياسة</a><a href="./?category=رياضة">رياضة</a><a href="./?category=اقتصاد">اقتصاد</a><a href="./?category=تكنولوجيا">تكنولوجيا</a></nav>
+<div class="topline"></div>
+<header class="masthead">
+ <div class="masthead-inner">
+  <a class="brand" href="./" aria-label="أخبار اليوم - الرئيسية">
+   <span class="brand-mark">أ</span>
+   <span><h1>أخبار اليوم</h1><p>من قلب الحدث.. أخبار تهمك كل يوم</p></span>
+  </a>
+  <div class="head-note"><strong>بوابتك إلى الخبر</strong><span id="today"></span></div>
+ </div>
+</header>
+<div class="nav-wrap"><nav id="mainNav">
+ <a href="./" data-cat="" class="active">الرئيسية</a><a href="./?category=مصر" data-cat="مصر">مصر</a><a href="./?category=سياسة" data-cat="سياسة">سياسة</a><a href="./?category=رياضة" data-cat="رياضة">رياضة</a><a href="./?category=اقتصاد" data-cat="اقتصاد">اقتصاد</a><a href="./?category=تكنولوجيا" data-cat="تكنولوجيا">تكنولوجيا</a>
+</nav></div>
+<div class="breaking"><div class="breaking-inner"><span class="breaking-label">آخر الأخبار</span><span id="ticker">تابع أحدث الأخبار على أخبار اليوم</span></div></div>
 <main>
-<div class="ad">مساحة إعلانية</div>
-<section id="article"></section>
-<section id="listing"><h2 class="section-title" id="heading">أحدث الأخبار</h2><div id="news" class="grid"><div class="empty">جاري تحميل الأخبار...</div></div></section>
-<div class="ad">مساحة إعلانية</div>
+ <div class="ad">مساحة إعلانية</div>
+ <section id="article"></section>
+ <section id="listing">
+  <div id="homeLead">
+   <div class="section-head"><h2>أهم الأخبار</h2><span>أبرز ما يحدث الآن</span></div>
+   <div id="leadLayout" class="lead-layout"><div class="empty">جاري تحميل الأخبار...</div></div>
+  </div>
+  <div class="section-head"><h2 id="heading">أحدث الأخبار</h2><span>كل جديد في مكان واحد</span></div>
+  <div id="news" class="cards"><div class="empty">جاري تحميل الأخبار...</div></div>
+ </section>
+ <div class="ad">مساحة إعلانية</div>
 </main>
-<footer>جميع الحقوق محفوظة © أخبار اليوم <span id="year"></span> · <a href="./admin.html">لوحة الإدارة</a></footer>
+<footer><div class="footer-inner"><div><div class="footer-brand">أخبار اليوم</div><p>من قلب الحدث.. أخبار تهمك كل يوم</p></div><div><p>جميع الحقوق محفوظة © أخبار اليوم <span id="year"></span></p><p><a href="./admin.html">لوحة الإدارة</a></p></div></div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL="https://pnpcfrjheoflclbqnppl.supabase.co";
 const SUPABASE_KEY="sb_publishable_WJj_QJ4nzCGjBeekNAoJ_w_XQ5dJtzY";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const newsEl=document.getElementById('news');
+const $=id=>document.getElementById(id);
 const params=new URLSearchParams(location.search);
-document.getElementById('year').textContent=new Date().getFullYear();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function date(s){return new Date(s).toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'})}
+const date=s=>new Date(s).toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});
+const excerpt=s=>{const t=String(s??'');return esc(t.slice(0,135))+(t.length>135?'…':'')};
+const image=(url,title,cls='')=>url?'<img class="'+cls+'" src="'+esc(url)+'" alt="'+esc(title)+'" loading="lazy">':'<div class="card-placeholder '+cls+'"></div>';
+$('year').textContent=new Date().getFullYear();
+$('today').textContent=new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+function storyCard(n){return '<article class="card">'+image(n.image_url,n.title)+'<div class="card-body"><span class="category">'+esc(n.category)+'</span><h3>'+esc(n.title)+'</h3><p>'+excerpt(n.content)+'</p><div class="meta">'+date(n.created_at)+'</div><a class="read-more" href="./?id='+encodeURIComponent(n.id)+'">اقرأ التفاصيل ←</a></div></article>'}
+function sideStory(n){return '<a class="side-story" href="./?id='+encodeURIComponent(n.id)+'">'+image(n.image_url,n.title)+'<div class="side-story-body"><span class="category">'+esc(n.category)+'</span><h3>'+esc(n.title)+'</h3><div class="meta">'+date(n.created_at)+'</div></div></a>'}
+function renderLead(items){
+ const first=items[0],others=items.slice(1,3);
+ $('leadLayout').innerHTML='<a class="hero" href="./?id='+encodeURIComponent(first.id)+'">'+image(first.image_url,first.title)+'<div class="hero-content"><span class="tag">'+esc(first.category)+'</span><h2>'+esc(first.title)+'</h2><p>'+excerpt(first.content)+'</p><div class="meta">'+date(first.created_at)+' · اقرأ الخبر كاملاً</div></div></a><div class="side-stories">'+(others.length?others.map(sideStory).join(''):'<div class="empty">أضف المزيد من الأخبار لتظهر هنا.</div>')+'</div>';
+}
 async function load(){
  const id=params.get('id');
  if(id){
-  document.getElementById('listing').style.display='none';
-  const box=document.getElementById('article');box.style.display='block';box.innerHTML='<p>جاري تحميل الخبر...</p>';
+  $('listing').style.display='none';const box=$('article');box.style.display='block';box.innerHTML='<p>جاري تحميل الخبر...</p>';
   const {data,error}=await db.from('news').select('*').eq('id',id).eq('published',true).single();
-  if(error||!data){box.innerHTML='<h2>الخبر غير متاح</h2><a href="./">العودة للرئيسية</a>';return}
+  if(error||!data){box.innerHTML='<h2>الخبر غير متاح</h2><a class="back-link" href="./">العودة للرئيسية</a>';return}
   document.title=data.title+' | أخبار اليوم';
-  box.innerHTML=(data.image_url?'<img src="'+esc(data.image_url)+'" alt="'+esc(data.title)+'">':'')+'<p class="category">'+esc(data.category)+'</p><h1>'+esc(data.title)+'</h1><p class="meta">'+date(data.created_at)+'</p><div>'+esc(data.content).replace(/\n/g,'<br>')+'</div><p><a href="./">← العودة إلى الأخبار</a></p>';
+  box.innerHTML='<span class="tag">'+esc(data.category)+'</span><h1>'+esc(data.title)+'</h1><div class="meta">'+date(data.created_at)+'</div>'+(data.image_url?'<img src="'+esc(data.image_url)+'" alt="'+esc(data.title)+'">':'')+'<div class="article-content">'+esc(data.content)+'</div><a class="back-link" href="./">← العودة إلى الأخبار</a>';
   return;
  }
  const category=params.get('category');
- if(category)document.getElementById('heading').textContent='أخبار '+category;
+ if(category){$('homeLead').style.display='none';$('heading').textContent='أخبار '+category;document.querySelectorAll('#mainNav a').forEach(a=>a.classList.toggle('active',a.dataset.cat===category));}
  let q=db.from('news').select('id,title,content,image_url,category,created_at').eq('published',true).order('created_at',{ascending:false});
  if(category)q=q.eq('category',category);
  const {data,error}=await q;
- if(error){newsEl.innerHTML='<div class="error">تعذر تحميل الأخبار حالياً. تأكد من إعداد قاعدة البيانات وسياسات القراءة.</div>';return}
- if(!data?.length){newsEl.innerHTML='<div class="empty">لا توجد أخبار منشورة حالياً.</div>';return}
- newsEl.innerHTML=data.map(n=>'<article class="card">'+(n.image_url?'<img src="'+esc(n.image_url)+'" alt="'+esc(n.title)+'">':'<div style="height:180px;background:#e2e8f0"></div>')+'<div class="card-body"><span class="category">'+esc(n.category)+'</span><h3>'+esc(n.title)+'</h3><p>'+esc(n.content).slice(0,145)+(n.content.length>145?'…':'')+'</p><div class="meta">'+date(n.created_at)+'</div><p><a href="./?id='+encodeURIComponent(n.id)+'">اقرأ الخبر ←</a></p></div></article>').join('');
+ if(error){$('news').innerHTML='<div class="error">تعذر تحميل الأخبار حالياً. حاول تحديث الصفحة بعد قليل.</div>';if(!category)$('leadLayout').innerHTML='<div class="error">تعذر تحميل الأخبار حالياً.</div>';return}
+ if(!data?.length){$('news').innerHTML='<div class="empty">لا توجد أخبار منشورة حالياً.</div>';if(!category)$('leadLayout').innerHTML='<div class="empty">سيظهر الخبر الرئيسي هنا فور نشر أول خبر.</div>';$('ticker').textContent='لا توجد أخبار عاجلة حالياً';return}
+ $('ticker').textContent=data.slice(0,4).map(n=>n.title).join('  •  ');
+ if(!category)renderLead(data);
+ const remaining=category?data:data.slice(3);
+ $('news').innerHTML=remaining.length?remaining.map(storyCard).join(''):(category?'':'<div class="empty">هذه أحدث الأخبار المنشورة حالياً.</div>');
 }
 load();
 </script>
-</body></html>
+</body>
+</html>
