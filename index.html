@@ -96,7 +96,7 @@ footer a{color:#fff;text-decoration:underline;text-decoration-color:#71869b}
  </div>
 </header>
 <div class="nav-wrap"><nav id="mainNav">
- <a href="./" data-cat="" class="active">الرئيسية</a><a href="./?category=مصر" data-cat="مصر">مصر</a><a href="./?category=عرب%20وعالم" data-cat="عرب وعالم">عرب وعالم</a><a href="./?category=سياسة" data-cat="سياسة">سياسة</a><a href="./?category=حوادث" data-cat="حوادث">حوادث</a><a href="./?category=رياضة" data-cat="رياضة">رياضة</a><a href="./?category=اقتصاد" data-cat="اقتصاد">اقتصاد</a><a href="./?category=تكنولوجيا" data-cat="تكنولوجيا">تكنولوجيا</a><a href="./?category=تعليم" data-cat="تعليم">تعليم</a><a href="./?category=صحة" data-cat="صحة">صحة</a><a href="./?category=فن%20وثقافة" data-cat="فن وثقافة">فن وثقافة</a><a href="./?category=منوعات" data-cat="منوعات">منوعات</a><a href="./?category=علوم%20وفضاء" data-cat="علوم وفضاء">علوم وفضاء</a>
+ <a href="./" data-cat="" class="active">الرئيسية</a><a href="./?category=مصر" data-cat="مصر">مصر</a><a href="./?category=عرب%20وعالم" data-cat="عرب وعالم">عرب وعالم</a><a href="./?category=حوادث" data-cat="حوادث">حوادث</a><a href="./?category=رياضة" data-cat="رياضة">رياضة</a><a href="./?category=اقتصاد" data-cat="اقتصاد">اقتصاد</a><a href="./?category=تكنولوجيا" data-cat="تكنولوجيا">تكنولوجيا</a><a href="./?category=تعليم" data-cat="تعليم">تعليم</a><a href="./?category=صحة" data-cat="صحة">صحة</a><a href="./?category=فن%20وثقافة" data-cat="فن وثقافة">فن وثقافة</a><a href="./?category=منوعات" data-cat="منوعات">منوعات</a><a href="./?category=علوم%20وفضاء" data-cat="علوم وفضاء">علوم وفضاء</a>
 </nav></div>
 <div class="breaking"><div class="breaking-inner"><span class="breaking-label">آخر الأخبار</span><div class="ticker-window"><span id="ticker">تابع أحدث الأخبار على أخبار اليوم</span></div></div></div>
 <main>
@@ -133,7 +133,6 @@ const categoryPhoto=category=>{
  const photos={
   'مصر':'photo-1539650116574-75c0c6d73f6e',
   'عرب وعالم':'photo-1529107386315-e1a2ed48a620',
-  'سياسة':'photo-1529107386315-e1a2ed48a620',
   'حوادث':'photo-1486262715619-67b85e0b08d3',
   'رياضة':'photo-1522778119026-d647f0596c20',
   'اقتصاد':'photo-1486406146926-c627a92ad1ab',
@@ -171,11 +170,11 @@ async function loadAds(){
 function renderCards(items){$('news').innerHTML=items.length?items.map(storyCard).join(''):'<div class="empty">لا توجد نتائج مطابقة لبحثك.</div>'; $('searchStatus').textContent=items.length?'عدد الأخبار: '+items.length:'';}
 function filterNews(term,items){const value=term.trim().toLocaleLowerCase('ar');const filtered=items.filter(n=>(String(n.title)+' '+String(n.content)+' '+String(n.category)).toLocaleLowerCase('ar').includes(value));renderCards(filtered);$('categorySections').style.display=value?'none':'';}
 function renderCategoryDirectory(){
- const categories=['مصر','عرب وعالم','سياسة','حوادث','رياضة','اقتصاد','تكنولوجيا','تعليم','صحة','فن وثقافة','منوعات','علوم وفضاء','عام'];
+ const categories=['مصر','عرب وعالم','حوادث','رياضة','اقتصاد','تكنولوجيا','تعليم','صحة','فن وثقافة','منوعات','علوم وفضاء','عام'];
  $('categoryTiles').innerHTML=categories.map(cat=>'<a class="category-tile" href="./?category='+encodeURIComponent(cat)+'">'+image('',cat,'',cat)+'<strong>'+esc(cat)+'</strong></a>').join('');
 }
 function renderCategorySections(items){
- const categories=['مصر','عرب وعالم','سياسة','حوادث','رياضة','اقتصاد','تكنولوجيا','تعليم','صحة','فن وثقافة','منوعات','علوم وفضاء','عام'];
+ const categories=['مصر','عرب وعالم','حوادث','رياضة','اقتصاد','تكنولوجيا','تعليم','صحة','فن وثقافة','منوعات','علوم وفضاء','عام'];
  $('categorySections').innerHTML=categories.map(cat=>{const group=items.filter(n=>n.category===cat).slice(0,3);if(!group.length)return '';return '<section class="category-section"><div class="section-head"><h2>'+esc(cat)+'</h2><a class="category-more" href="./?category='+encodeURIComponent(cat)+'">كل أخبار القسم ←</a></div><div class="cards">'+group.map(storyCard).join('')+'</div></section>';}).join('');
 }
 function renderLead(items){
@@ -195,7 +194,7 @@ async function load(){
  }
  const category=params.get('category');
  if(category){$('homeLead').style.display='none';$('categoryDirectory').style.display='none';$('heading').textContent='أخبار '+category;document.querySelectorAll('#mainNav a').forEach(a=>a.classList.toggle('active',a.dataset.cat===category));}else{renderCategoryDirectory();}
- let q=db.from('news').select('id,title,content,image_url,category,created_at').eq('published',true).order('created_at',{ascending:false});
+ let q=db.from('news').select('id,title,content,image_url,category,created_at').eq('published',true).neq('category','سياسة').order('created_at',{ascending:false});
  if(category)q=q.eq('category',category);
  const {data,error}=await q;
  if(error){$('news').innerHTML='<div class="error">تعذر تحميل الأخبار حالياً. حاول تحديث الصفحة بعد قليل.</div>';if(!category)$('leadLayout').innerHTML='<div class="error">تعذر تحميل الأخبار حالياً.</div>';return}
