@@ -32,7 +32,7 @@ nav a:hover,nav a.active{background:var(--red);color:#fff}
 #ticker{display:inline-block;font-size:14px;font-weight:700;white-space:nowrap;animation:newsTicker 28s linear infinite}
 #ticker:hover{animation-play-state:paused}
 @keyframes newsTicker{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
-.search-row{display:flex;gap:10px;align-items:center;margin:18px 0 24px}
+.search-row{display:flex;gap:10px;align-items:center;margin:18px 0 24px}.search-submit{border:0;border-radius:9px;background:var(--red);color:#fff;padding:0 22px;min-height:48px;font:inherit;font-weight:800;cursor:pointer}.search-submit:hover{background:var(--red2)}
 .search-box{flex:1;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:0 15px;box-shadow:0 3px 14px #102a4308}
 .search-box span{font-size:19px;color:var(--red)}
 .search-box input{width:100%;border:0;outline:0;padding:14px 0;font:inherit;font-size:14px;color:var(--ink);background:transparent}
@@ -102,7 +102,7 @@ footer a{color:#fff;text-decoration:underline;text-decoration-color:#71869b}
 </nav></div>
 <div class="breaking"><div class="breaking-inner"><span class="breaking-label">آخر الأخبار</span><div class="ticker-window"><span id="ticker">تابع أحدث الأخبار على أخبار اليوم</span></div></div></div>
 <main>
- <div class="search-row"><label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="ابحث عن خبر أو موضوع..." autocomplete="off"></label><span class="search-hint">ابحث في أخبار اليوم</span></div><div id="searchStatus" class="search-status" aria-live="polite"></div>
+ <form class="search-row" id="searchForm"><label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="اكتب كلمة من عنوان الخبر..." autocomplete="off"></label><button class="search-submit" type="submit">بحث</button></form><div id="searchStatus" class="search-status" aria-live="polite"></div>
  <div class="ad" id="ad-top">مساحة إعلانية</div>
  <section id="article"></section>
  <section id="listing">
@@ -126,7 +126,7 @@ const SUPABASE_KEY="sb_publishable_WJj_QJ4nzCGjBeekNAoJ_w_XQ5dJtzY";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const params=new URLSearchParams(location.search);
-let allNews=[];
+let allNews=[];\nlet newsLoaded=false;
 let activeAds=[];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=s=>new Date(s).toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});
@@ -170,18 +170,37 @@ async function loadAds(){
  ['top','middle','bottom','featured','article'].forEach(p=>renderAd(p,activeAds.find(ad=>ad.placement===p)||activeAds.find(ad=>ad.placement==='all')));
 }
 function renderCards(items){$('news').innerHTML=items.length?items.map(storyCard).join(''):'<div class="empty">لا توجد نتائج مطابقة لبحثك.</div>'; $('searchStatus').textContent=items.length?'عدد الأخبار: '+items.length:'';}
-function normalizeSearch(value){return String(value||'').toLocaleLowerCase('ar').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/[ًٌٍَُِّْـ]/g,'').trim();}
+function normalizeSearch(value){
+ return String(value||'').toLocaleLowerCase('ar')
+  .replace(/[أإآٱ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')
+  .replace(/[ًٌٍَُِّْـ]/g,'').replace(/\\s+/g,' ').trim();
+}
 function filterNews(term){
- const value=normalizeSearch(term),category=params.get('category');
+ const value=normalizeSearch(term);
+ const category=params.get('category');
+ if(!newsLoaded){
+  $('searchStatus').textContent='جاري تحميل الأخبار، انتظر لحظة ثم اضغط بحث مرة أخرى.';
+  return;
+ }
  if(value){
-  const filtered=allNews.filter(n=>normalizeSearch([n.title,n.content,n.category].join(' ')).includes(value));
-  $('homeLead').style.display='none';$('categoryDirectory').style.display='none';$('categorySections').style.display='none';
-  renderCards(filtered);$('searchStatus').textContent='نتائج البحث: '+filtered.length;
+  const filtered=allNews.filter(n=>{
+   const text=normalizeSearch([n.title,n.content,n.category].join(' '));
+   return text.includes(value);
+  });
+  $('homeLead').style.display='none';
+  $('categoryDirectory').style.display='none';
+  $('categorySections').style.display='none';
+  $('heading').textContent='نتائج البحث';
+  renderCards(filtered);
+  $('searchStatus').textContent=filtered.length?'تم العثور على '+filtered.length+' خبر':'لم نعثر على أخبار تطابق كلمة البحث.';
  }else{
+  $('heading').textContent=category?'أخبار '+category:'أحدث الأخبار';
   $('categoryDirectory').style.display=category?'none':'';
   $('homeLead').style.display=category?'none':'';
   $('categorySections').style.display=category?'none':'';
-  renderCards(category?allNews:allNews.slice(3));$('searchStatus').textContent='';
+  if(!category)renderCategorySections(allNews);
+  renderCards(category?allNews:allNews.slice(3));
+  $('searchStatus').textContent='';
  }
 }
 function renderCategoryDirectory(){
@@ -230,7 +249,7 @@ async function load(){
  renderCards(remaining);
 
 }
-$('searchInput').addEventListener('input',e=>filterNews(e.target.value));
+$('searchForm').addEventListener('submit',e=>{e.preventDefault();filterNews($('searchInput').value);});\n$('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();filterNews(e.target.value);}});
 Promise.all([loadAds()]).then(()=>load());
 </script>
 </body>
