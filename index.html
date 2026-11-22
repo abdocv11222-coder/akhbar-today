@@ -1,92 +1,53 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>أخبار اليوم</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Tahoma, Arial, sans-serif;
-      background: #f4f5f7;
-      color: #222;
-    }
-    header {
-      background: #142b4a;
-      color: white;
-      padding: 25px;
-      text-align: center;
-    }
-    nav {
-      background: #203d60;
-      padding: 15px;
-      text-align: center;
-    }
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 12px;
-    }
-    main {
-      max-width: 1000px;
-      margin: 25px auto;
-      padding: 15px;
-    }
-    .news, .ad {
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-    }
-    .ad {
-      border: 2px dashed #aaa;
-      text-align: center;
-      color: #777;
-    }
-    footer {
-      background: #142b4a;
-      color: white;
-      text-align: center;
-      padding: 20px;
-    }
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>أخبار اليوم | أحدث الأخبار</title>
+<meta name="description" content="تابع أحدث الأخبار من مصر والعالم في أخبار اليوم">
+<style>
+:root{--navy:#102a43;--blue:#1769aa;--bg:#f3f6fa;--ink:#172b4d}*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink)}header{background:linear-gradient(120deg,#102a43,#1769aa);color:#fff;padding:28px 16px;text-align:center}header h1{margin:0 0 8px;font-size:34px}header p{margin:0;color:#e5efff}nav{background:#0b1f33;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:12px}nav a{color:#fff;text-decoration:none;padding:9px 14px;border-radius:8px}nav a:hover,nav a.active{background:#1769aa}main{max-width:1100px;margin:24px auto;padding:0 15px}.ad{background:#fff;border:1px dashed #b8c5d4;border-radius:12px;padding:22px;text-align:center;color:#718096;margin:18px 0}.section-title{font-size:22px;margin:25px 0 14px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 5px 18px #102a4310}.card img{width:100%;height:180px;object-fit:cover;background:#e2e8f0}.card-body{padding:16px}.category{color:#1769aa;font-size:13px;font-weight:bold}.card h3{margin:8px 0;line-height:1.6}.card p{color:#526579;line-height:1.8;margin:8px 0}.card a{color:#1769aa;text-decoration:none;font-weight:bold}.meta{font-size:12px;color:#8492a6}.empty,.error{background:#fff;border-radius:12px;padding:25px;text-align:center;color:#526579}#article{display:none;background:#fff;padding:24px;border-radius:14px;line-height:2}#article img{width:100%;max-height:420px;object-fit:cover;border-radius:12px}footer{background:#102a43;color:#fff;text-align:center;padding:24px;margin-top:45px}footer a{color:#d9eaff}@media(max-width:600px){header h1{font-size:27px}}
+</style>
 </head>
 <body>
-
-<header>
-  <h1>أخبار اليوم</h1>
-  <p>تابع أحدث الأخبار من مصر والعالم</p>
-</header>
-
-<nav>
-  <a href="#">الرئيسية</a>
-  <a href="#">سياسة</a>
-  <a href="#">رياضة</a>
-  <a href="#">اقتصاد</a>
-  <a href="#">تكنولوجيا</a>
-</nav>
-
+<header><h1>أخبار اليوم</h1><p>من قلب الحدث.. أخبار تهمك كل يوم</p></header>
+<nav><a href="./" class="active">الرئيسية</a><a href="./?category=مصر">مصر</a><a href="./?category=سياسة">سياسة</a><a href="./?category=رياضة">رياضة</a><a href="./?category=اقتصاد">اقتصاد</a><a href="./?category=تكنولوجيا">تكنولوجيا</a></nav>
 <main>
-  <section class="news">
-    <h2>مرحباً بك في أخبار اليوم</h2>
-    <p>هنا هتظهر أحدث الأخبار والتقارير.</p>
-  </section>
-
-  <section class="ad">
-    <h3>مساحة إعلانية</h3>
-    <p>مكان عرض الإعلانات لاحقاً</p>
-  </section>
-
-  <section class="news">
-    <h2>أحدث الأخبار</h2>
-    <p>سيتم إضافة الأخبار من لوحة التحكم الخاصة بالموقع.</p>
-  </section>
+<div class="ad">مساحة إعلانية</div>
+<section id="article"></section>
+<section id="listing"><h2 class="section-title" id="heading">أحدث الأخبار</h2><div id="news" class="grid"><div class="empty">جاري تحميل الأخبار...</div></div></section>
+<div class="ad">مساحة إعلانية</div>
 </main>
-
-<footer>
-  جميع الحقوق محفوظة © أخبار اليوم
-</footer>
-
-</body>
-</html>
+<footer>جميع الحقوق محفوظة © أخبار اليوم <span id="year"></span> · <a href="./admin.html">لوحة الإدارة</a></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://pnpcfrjheoflclbqnppl.supabase.co";
+const SUPABASE_KEY="sb_publishable_WJj_Q4JnzCGjBeekNAoJ_w_XQ5dJtzY";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const newsEl=document.getElementById('news');
+const params=new URLSearchParams(location.search);
+document.getElementById('year').textContent=new Date().getFullYear();
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function date(s){return new Date(s).toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'})}
+async function load(){
+ const id=params.get('id');
+ if(id){
+  document.getElementById('listing').style.display='none';
+  const box=document.getElementById('article');box.style.display='block';box.innerHTML='<p>جاري تحميل الخبر...</p>';
+  const {data,error}=await db.from('news').select('*').eq('id',id).eq('published',true).single();
+  if(error||!data){box.innerHTML='<h2>الخبر غير متاح</h2><a href="./">العودة للرئيسية</a>';return}
+  document.title=data.title+' | أخبار اليوم';
+  box.innerHTML=(data.image_url?'<img src="'+esc(data.image_url)+'" alt="'+esc(data.title)+'">':'')+'<p class="category">'+esc(data.category)+'</p><h1>'+esc(data.title)+'</h1><p class="meta">'+date(data.created_at)+'</p><div>'+esc(data.content).replace(/\n/g,'<br>')+'</div><p><a href="./">← العودة إلى الأخبار</a></p>';
+  return;
+ }
+ const category=params.get('category');
+ if(category)document.getElementById('heading').textContent='أخبار '+category;
+ let q=db.from('news').select('id,title,content,image_url,category,created_at').eq('published',true).order('created_at',{ascending:false});
+ if(category)q=q.eq('category',category);
+ const {data,error}=await q;
+ if(error){newsEl.innerHTML='<div class="error">تعذر تحميل الأخبار حالياً. تأكد من إعداد قاعدة البيانات وسياسات القراءة.</div>';return}
+ if(!data?.length){newsEl.innerHTML='<div class="empty">لا توجد أخبار منشورة حالياً.</div>';return}
+ newsEl.innerHTML=data.map(n=>'<article class="card">'+(n.image_url?'<img src="'+esc(n.image_url)+'" alt="'+esc(n.title)+'">':'<div style="height:180px;background:#e2e8f0"></div>')+'<div class="card-body"><span class="category">'+esc(n.category)+'</span><h3>'+esc(n.title)+'</h3><p>'+esc(n.content).slice(0,145)+(n.content.length>145?'…':'')+'</p><div class="meta">'+date(n.created_at)+'</div><p><a href="./?id='+encodeURIComponent(n.id)+'">اقرأ الخبر ←</a></p></div></article>').join('');
+}
+load();
+</script>
+</body></html>
