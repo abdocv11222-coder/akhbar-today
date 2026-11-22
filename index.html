@@ -154,8 +154,8 @@ function sideStory(n){return '<a class="side-story" href="./?id='+encodeURICompo
 function renderAd(placement,ad){
  const box=$('ad-'+placement);if(!box)return;
  if(!ad){box.classList.remove('has-ad');box.textContent='مساحة إعلانية';return;}
- const url=/^https?:\\/\\//i.test(String(ad.target_url||''))?ad.target_url:'#';
- const img=/^https?:\\/\\//i.test(String(ad.image_url||''))?ad.image_url:'';
+ const target=String(ad.target_url||'');const url=(target.startsWith('https://')||target.startsWith('http://'))?target:'#';
+ const imageUrl=String(ad.image_url||'');const img=(imageUrl.startsWith('https://')||imageUrl.startsWith('http://'))?imageUrl:'';
  if(!img){box.classList.remove('has-ad');box.textContent='مساحة إعلانية';return;}
  box.classList.add('has-ad');
  box.innerHTML='<span class="ad-label">إعلان</span><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer sponsored"><img src="'+esc(img)+'" alt="'+esc(ad.title||'إعلان')+'" loading="lazy"></a>';
