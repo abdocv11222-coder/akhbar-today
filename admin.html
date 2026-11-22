@@ -99,7 +99,7 @@ $('adForm').onsubmit=async e=>{
  }
  if(!imageUrl){say('اختَر صورة للإعلان أولاً.');return;}
  const target=$('adTarget').value.trim();
- if(!/^https?:\\/\\//i.test(target)){say('اكتب رابطًا يبدأ بـ https:// أو http://');return;}
+ if(!(target.startsWith('https://')||target.startsWith('http://'))){say('اكتب رابطًا يبدأ بـ https:// أو http://');return;}
  const payload={title:$('adTitle').value.trim(),image_url:imageUrl,target_url:target,placement:$('adPlacement').value,active:$('adActive').checked};
  const id=$('adId').value;
  const result=id?await db.from('ads').update(payload).eq('id',id):await db.from('ads').insert(payload);
